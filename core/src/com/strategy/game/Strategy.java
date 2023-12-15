@@ -1,31 +1,90 @@
 package com.strategy.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.strategy.game.map.Map;
+import com.strategy.game.map.Season;
+import com.strategy.game.map.daemon.SeasonChange;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Strategy extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+	Map map;
+	SeasonChange seasonChange;
+	private TiledMapRenderer renderer;
+	private OrthographicCamera camera;
+	private CameraInputController cameraController;
+	private AssetManager assetManager;
+	private Texture tiles;
+	private Texture texture;
+	private BitmapFont font;
+	private SpriteBatch batch;
 	
 	@Override
-	public void create () {
+	public void create() {
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, (w / h) * 320, 320);
+		camera.update();
+
+		cameraController = new CameraInputController(camera);
+		Gdx.input.setInputProcessor(cameraController);
+
+		font = new BitmapFont();
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+
+		map = new Map(
+				3,
+				3,
+				64,
+				64,
+				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons.png"),
+				Season.Summer
+		);
+
+		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
+		camera.update();
+		renderer.setView(camera);
+		renderer.render();
 		batch.begin();
-		batch.draw(img, 0, 0);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		//font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 40);
 		batch.end();
+		changeMap();
+	}
+
+	void changeMap() {
+		Gdx.app.postRunnable(() -> { //Post runnable posts the below task in opengl thread
+			try {
+				seasonChange.temperateSeasonChanging();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+
 	}
 }
