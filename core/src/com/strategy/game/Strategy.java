@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.Season;
 import com.strategy.game.map.daemon.SeasonChange;
@@ -57,6 +58,17 @@ public class Strategy extends ApplicationAdapter {
 				Season.Summer
 		);
 
+		seasonChange = new SeasonChange(map);
+		new Thread(() -> {
+			while (true) {
+				try {
+					seasonChange.temperateSeasonChanging();
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}).start();
+
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
 
@@ -70,19 +82,8 @@ public class Strategy extends ApplicationAdapter {
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 		//font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 40);
 		batch.end();
-		changeMap();
 	}
 
-	void changeMap() {
-		Gdx.app.postRunnable(() -> { //Post runnable posts the below task in opengl thread
-			try {
-				seasonChange.temperateSeasonChanging();
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
-	
 	@Override
 	public void dispose () {
 

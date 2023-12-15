@@ -1,5 +1,6 @@
 package com.strategy.game.map.daemon;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -7,6 +8,7 @@ import com.strategy.game.map.Map;
 import com.strategy.game.map.Season;
 import com.strategy.game.map.SuitableTerrain;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class SeasonChange {
         this.prevTile = map.determineDefaultSeasonTile();
         this.currTile = map.determineDefaultSeasonTile();
         this.nextTile = map.determineDefaultSeasonTile();
-        this.layer = copyLayer((TiledMapTileLayer) map.getMap().getLayers().get(0));
+        this.layer = (TiledMapTileLayer) map.getMap().getLayers().get(0);
     }
 
     private TiledMapTileLayer copyLayer(TiledMapTileLayer oldLayer) {
@@ -102,7 +104,7 @@ public class SeasonChange {
                     }
                 }
                 for (int j = 0; j < map.getWidth(); j++) {
-                    for (int k = 0; k < map.getTileHeight(); k++) {
+                    for (int k = 0; k < map.getHeight(); k++) {
                         if (layer.getCell(j, k).getTile().getTextureRegion().equals(currTile)) {
                             List<SuitableTerrain> terrains = determineSuitableTiles(j, k);
                             SuitableTerrain suitableTerrain;
@@ -156,16 +158,12 @@ public class SeasonChange {
     }
 
     private Season determineTemperateNextSeason() {
-        switch (currentSeason) {
-            case Summer:
-                return Season.Autumn;
-            case Autumn:
-                return Season.Winter;
-            case Winter:
-                return Season.Spring;
-            default:
-                return Season.Summer;
-        }
+        return switch (currentSeason) {
+            case Summer -> Season.Autumn;
+            case Autumn -> Season.Winter;
+            case Winter -> Season.Spring;
+            default -> Season.Summer;
+        };
     }
 
     private List<SuitableTerrain> determineSuitableTiles(int x, int y) {
