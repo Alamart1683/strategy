@@ -40,7 +40,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 320, 320);
+		camera.setToOrtho(false, (w / h) * 1000, 1000);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -50,8 +50,8 @@ public class Strategy extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		map = new Map(
-				3,
-				3,
+				100,
+				100,
 				64,
 				64,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons.png"),
@@ -59,6 +59,7 @@ public class Strategy extends ApplicationAdapter {
 		);
 
 		seasonChange = new SeasonChange(map);
+
 		new Thread(() -> {
 			while (true) {
 				try {
@@ -80,7 +81,7 @@ public class Strategy extends ApplicationAdapter {
 		renderer.render();
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-		//font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 40);
+		font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 40);
 		batch.end();
 	}
 

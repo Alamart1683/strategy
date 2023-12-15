@@ -70,7 +70,7 @@ public class SeasonChange {
             currTile = nextTile;
             nextTile = determineTemperateNextTile();
             if (currentSeasonIter == 0 && currentSeason != Season.Summer || currentSeasonIter == 4 && currentSeason == Season.Spring) {
-                for (int j = 0; j < ((map.getWidth() * map.getHeight()) / 3 + 1); j++) {
+                for (int j = 0; j < ((map.getWidth() * map.getHeight()) / 5); j++) {
                     int x = random.nextInt(map.getWidth());
                     int y = random.nextInt(map.getHeight());
                     if (currentSeason == Season.Spring && currentSeasonIter == 4)
@@ -99,7 +99,6 @@ public class SeasonChange {
                             } else {
                                 setTile(currTile, j, k);
                             }
-
                         }
                     }
                 }
@@ -109,11 +108,17 @@ public class SeasonChange {
                             List<SuitableTerrain> terrains = determineSuitableTiles(j, k);
                             SuitableTerrain suitableTerrain;
                             if (terrains.size() >= 1) {
-                                if (terrains.size() > 1)
-                                    suitableTerrain = terrains.get(random.nextInt(0, terrains.size() - 1));
-                                else
+                                if (terrains.size() > 1) {
+                                    for (int l = 0; l < terrains.size() / 2; l++) {
+                                        suitableTerrain = terrains.get(l);
+                                        setTile(prevTile, suitableTerrain.getX(), suitableTerrain.getY());
+                                    }
+                                }
+                                else {
                                     suitableTerrain = terrains.get(0);
-                                setTile(prevTile, suitableTerrain.getX(), suitableTerrain.getY());
+                                    setTile(prevTile, suitableTerrain.getX(), suitableTerrain.getY());
+                                }
+
                             }
                         } else if (layer.getCell(j, k).getTile().getTextureRegion().equals(prevPrevPrevTile))
                             setTile(prevPrevTile, j, k);
