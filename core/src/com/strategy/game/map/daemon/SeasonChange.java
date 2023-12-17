@@ -49,14 +49,14 @@ public class SeasonChange {
             currTile = nextTile;
             nextTile = determineTemperateNextTile();
             if (currentSeasonIter == 5) {
-                for (int i = 0; i < ((map.getWidth() * map.getHeight()) / 9); i++) {
+                for (int i = 0; i < ((map.getWidth() * map.getHeight()) / 5); i++) {
                     int x = (int) random.nextGaussian() * map.getTileWidth();
                     int y = (int) random.nextGaussian() * map.getHeight();
                     setTile(nextTile, x, y);
                 }
                 prevTiles.add(currTile);
             } else {
-                if (prevTiles.size() > 6) {
+                if (prevTiles.size() > 7) {
                     prevTiles.add(currTile);
                     prevTiles.remove(0);
                 }
