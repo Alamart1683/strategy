@@ -51,13 +51,13 @@ public class Map {
     public TextureRegion determineDefaultSeasonTile() {
         switch (startSeason) {
             case Summer:
-                return textureRegions[0][1];
+                return textureRegions[0][2];
             case Autumn:
                 return textureRegions[1][2];
             case Winter:
-                return textureRegions[2][1];
+                return textureRegions[2][2];
             default:
-                return textureRegions[0][0];
+                return textureRegions[3][2];
         }
     }
 }

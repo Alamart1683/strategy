@@ -50,8 +50,8 @@ public class Strategy extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		map = new Map(
-				100,
-				100,
+				30,
+				30,
 				64,
 				64,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons.png"),
@@ -89,4 +89,6 @@ public class Strategy extends ApplicationAdapter {
 	public void dispose () {
 
 	}
+
+
 }
