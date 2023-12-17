@@ -56,7 +56,7 @@ public class ForestChange {
             Tree tree = new Tree(
                     path.getFileName().toString(),
                     PlantType.Tree,
-                    4,1, 3, 1, 30, 13,
+                    4,1, 3, 1, 30, 9,
                     determineStartTreeTile(tiles, startSeason),
                     tiles
             );
@@ -100,7 +100,6 @@ public class ForestChange {
                 int x = random.nextInt(forest.getWidth());
                 int y = random.nextInt(forest.getHeight());
                 // More uniform tree growth
-                /*
                 if (x < forest.getWidth() / 5)
                     x = forest.getWidth() / 5;
                 if (x > forest.getWidth() - 5)
@@ -109,7 +108,7 @@ public class ForestChange {
                     y = forest.getHeight() / 5;
                 if (y > forest.getHeight() - 5)
                     y = forest.getHeight() - 5;
-                 */
+
                 Tree tree = new Tree(trees.get(j));
                 setTree(tree, x, y);
             }

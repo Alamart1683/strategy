@@ -54,7 +54,13 @@ public class SeasonChange {
                     int y = (int) random.nextGaussian() * map.getHeight();
                     setTile(nextTile, x, y);
                 }
-                prevTiles.add(currTile);
+                if (prevTiles.size() > 7) {
+                    prevTiles.add(currTile);
+                    prevTiles.remove(0);
+                }
+                else {
+                    prevTiles.add(currTile);
+                }
             } else {
                 if (prevTiles.size() > 7) {
                     prevTiles.add(currTile);
@@ -89,9 +95,19 @@ public class SeasonChange {
                     }
                 }
             }
+            System.out.println(prevTiles.size());
             currentSeasonIter++;
-            Thread.sleep(1500);
+            Thread.sleep(300);
         }
+    }
+
+    private boolean isInPrevTiles(TextureRegion tile) {
+        for (TextureRegion prevTile: prevTiles) {
+            if (prevTile.equals(tile)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isNotAddedTile(ArrayList<SuitableTerrain> addedTerrains, int x, int y) {

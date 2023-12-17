@@ -44,7 +44,10 @@ public class Tree extends Plant {
             setGrowthStatus(newGrowthStatus);
         }
         // Change sprite trigger
-        setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
+        if (getAge() <= getAgeThreshold())
+            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
+        else // if tree is dead
+            setTile(getTiles()[getGrowthStatus() - 1][4]);
         return newGrowthStatus;
     }
 
