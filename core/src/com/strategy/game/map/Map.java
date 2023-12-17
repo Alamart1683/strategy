@@ -6,9 +6,8 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.strategy.game.map.terrain.Season;
 import lombok.Getter;
-
-import static com.strategy.game.map.Season.*;
 
 @Getter
 public class Map {
@@ -36,15 +35,22 @@ public class Map {
         MapLayers layers = map.getLayers();
         textureRegions = TextureRegion.split(tiles, tileWidth, tileHeight);
         TextureRegion startTile = determineDefaultSeasonTile();
-        TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+        TiledMapTileLayer tileLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+        TiledMapTileLayer forestLayer = new TiledMapTileLayer(width, height, tileWidth * 2, tileHeight * 2);
+        TextureRegion transparent = TextureRegion.split(new Texture("assets/tiles/transparent.png"), width, height)[0][0];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new StaticTiledMapTile(startTile));
-                layer.setCell(i, j, cell);
+                tileLayer.setCell(i, j, cell);
+
+                TiledMapTileLayer.Cell forestCell = new TiledMapTileLayer.Cell();
+                forestCell.setTile(new StaticTiledMapTile(transparent));
+                forestLayer.setCell(i, j, forestCell);
             }
         }
-        layers.add(layer);
+        layers.add(tileLayer);
+        layers.add(forestLayer);
         return map;
     }
 

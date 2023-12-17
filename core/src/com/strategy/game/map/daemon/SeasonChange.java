@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.strategy.game.map.Map;
-import com.strategy.game.map.Season;
-import com.strategy.game.map.SuitableTerrain;
+import com.strategy.game.map.terrain.Season;
+import com.strategy.game.map.terrain.SuitableTerrain;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class SeasonChange {
                 }
             }
             currentSeasonIter++;
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         }
     }
 

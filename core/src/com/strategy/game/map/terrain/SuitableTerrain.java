@@ -1,4 +1,4 @@
-package com.strategy.game.map;
+package com.strategy.game.map.terrain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;

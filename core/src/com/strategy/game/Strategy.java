@@ -9,22 +9,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Timer;
 import com.strategy.game.map.Map;
-import com.strategy.game.map.Season;
+import com.strategy.game.map.daemon.ForestChange;
+import com.strategy.game.map.terrain.Season;
 import com.strategy.game.map.daemon.SeasonChange;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Strategy extends ApplicationAdapter {
 	Map map;
 	SeasonChange seasonChange;
+	ForestChange forestChange;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private CameraInputController cameraController;
@@ -33,6 +28,8 @@ public class Strategy extends ApplicationAdapter {
 	private Texture texture;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private Season currentSeason;
+	private String climate;
 	
 	@Override
 	public void create() {
@@ -49,9 +46,12 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
+		currentSeason = Season.Summer;
+		climate = "temperate";
+
 		map = new Map(
-				30,
-				30,
+				20,
+				20,
 				64,
 				64,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons.png"),
@@ -60,10 +60,13 @@ public class Strategy extends ApplicationAdapter {
 
 		seasonChange = new SeasonChange(map);
 
+		forestChange = new ForestChange(map, climate, currentSeason);
+
 		new Thread(() -> {
 			while (true) {
 				try {
 					seasonChange.temperateSeasonChanging();
+					currentSeason = seasonChange.getCurrentSeason();
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
