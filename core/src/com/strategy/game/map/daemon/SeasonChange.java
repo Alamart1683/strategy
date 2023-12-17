@@ -95,7 +95,6 @@ public class SeasonChange {
                     }
                 }
             }
-            System.out.println(prevTiles.size());
             currentSeasonIter++;
             Thread.sleep(300);
         }
