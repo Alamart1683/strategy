@@ -19,6 +19,7 @@ public class Map {
     private TextureRegion[][] textureRegions;
     private Season startSeason;
     private TiledMap map;
+    private TextureRegion transparent;
 
     public Map(int width, int height, int tileWidth, int tileHeight, Texture tiles, Season startSeason) {
         this.width = width;
@@ -36,8 +37,8 @@ public class Map {
         textureRegions = TextureRegion.split(tiles, tileWidth, tileHeight);
         TextureRegion startTile = determineDefaultSeasonTile();
         TiledMapTileLayer tileLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
-        TiledMapTileLayer forestLayer = new TiledMapTileLayer(width, height, tileWidth * 2, tileHeight * 2);
-        TextureRegion transparent = TextureRegion.split(new Texture("assets/tiles/transparent.png"), width, height)[0][0];
+        TiledMapTileLayer forestLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+        transparent = TextureRegion.split(new Texture("assets/tiles/transparent.png"), width, height)[0][0];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();

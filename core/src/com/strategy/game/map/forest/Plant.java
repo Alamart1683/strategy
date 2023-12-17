@@ -65,21 +65,21 @@ public abstract class Plant {
         this.tiles = tiles;
     }
 
-    public abstract int grow(String currentSeason, String lastSeason);
+    public abstract int grow(String currentSeason);
 
     public int determineSeason(String currentSeason) {
         switch (currentSeason) {
             case "Autumn" -> {
-                return 1;
-            }
-            case "Winter" -> {
                 return 2;
             }
-            case "Spring" -> {
+            case "Winter" -> {
                 return 3;
             }
-            default -> {
+            case "Spring" -> {
                 return 0;
+            }
+            default -> {
+                return 1;
             }
         }
     }

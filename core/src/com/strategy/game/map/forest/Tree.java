@@ -26,10 +26,8 @@ public class Tree extends Plant {
     }
 
     @Override
-    public int grow(String currentSeason, String lastSeason) {
+    public int grow(String currentSeason) {
         setAge(getAge() + 1);
-        boolean isGrow = false;
-        boolean isChangedSeason = !currentSeason.equals(lastSeason);
         int newGrowthStatus = 0;
         // Death trigger
         Random random = new Random(getAge());
@@ -44,12 +42,9 @@ public class Tree extends Plant {
             setLastGrowthStatus(getGrowthStatus());
             newGrowthStatus = getLastGrowthStatus() + 1;
             setGrowthStatus(newGrowthStatus);
-            isGrow = true;
         }
         // Change sprite trigger
-        if (isGrow || isChangedSeason) {
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
-        }
+        setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
         return newGrowthStatus;
     }
 

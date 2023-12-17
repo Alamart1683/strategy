@@ -153,7 +153,7 @@ public class SeasonChange {
         return null;
     }
 
-    private Season determineTemperateNextSeason() {
+    public Season determineTemperateNextSeason() {
         return switch (currentSeason) {
             case Summer -> Season.Autumn;
             case Autumn -> Season.Winter;

@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.daemon.ForestChange;
+import com.strategy.game.map.forest.Plant;
 import com.strategy.game.map.terrain.Season;
 import com.strategy.game.map.daemon.SeasonChange;
 
@@ -29,6 +30,7 @@ public class Strategy extends ApplicationAdapter {
 	private BitmapFont font;
 	private SpriteBatch batch;
 	private Season currentSeason;
+	private Season prevSeason;
 	private String climate;
 	
 	@Override
@@ -37,7 +39,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 1000, 1000);
+		camera.setToOrtho(false, (w / h) * 3000, 3000);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -50,11 +52,11 @@ public class Strategy extends ApplicationAdapter {
 		climate = "temperate";
 
 		map = new Map(
-				20,
-				20,
-				64,
-				64,
-				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons.png"),
+				30,
+				30,
+				128,
+				128,
+				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
 				Season.Summer
 		);
 
@@ -67,11 +69,21 @@ public class Strategy extends ApplicationAdapter {
 				try {
 					seasonChange.temperateSeasonChanging();
 					currentSeason = seasonChange.getCurrentSeason();
+					if (seasonChange.getCurrentSeasonIter() == 9)
+						forestChange.nextForestGrowsIter(seasonChange.determineTemperateNextSeason());
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
 			}
 		}).start();
+
+		/*
+		new Thread(() -> {
+			while (true) {
+				forestChange.nextForestGrowsIter(currentSeason);
+			}
+		}).start();
+		 */
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
