@@ -89,4 +89,6 @@ public class Strategy extends ApplicationAdapter {
 	public void dispose () {
 
 	}
+
+
 }
