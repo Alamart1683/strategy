@@ -49,9 +49,9 @@ public class SeasonChange {
             currTile = nextTile;
             nextTile = determineTemperateNextTile();
             if (currentSeasonIter == 5) {
-                for (int i = 0; i < ((map.getWidth() * map.getHeight()) / 8); i++) {
-                    int x = random.nextInt(map.getWidth());
-                    int y = random.nextInt(map.getHeight());
+                for (int i = 0; i < ((map.getWidth() * map.getHeight()) / 9); i++) {
+                    int x = (int) random.nextGaussian() * map.getTileWidth();
+                    int y = (int) random.nextGaussian() * map.getHeight();
                     setTile(nextTile, x, y);
                 }
                 prevTiles.add(currTile);
@@ -90,7 +90,7 @@ public class SeasonChange {
                 }
             }
             currentSeasonIter++;
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         }
     }
 
@@ -135,9 +135,9 @@ public class SeasonChange {
             else if (currentSeasonIter == 6)
                 return tiles[2][4];
             else if (currentSeasonIter == 7)
-                return tiles[2][0];
+                return tiles[3][0];
             else if (currentSeasonIter == 8)
-                return tiles[2][1];
+                return tiles[3][1];
         } else if (currentSeason == Season.Spring) {
             if (currentSeasonIter >= 0 && currentSeasonIter < 5)
                 return tiles[3][2];
