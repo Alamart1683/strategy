@@ -156,8 +156,9 @@ public class ForestChange {
                 y = random.nextInt(j - 4, j - 1);
             }
             if (checkNearTrees(x, y)) {
-                currTreesInForest[x][y] = new Tree(determineTree(tree));
-                setTree(tree, x, y);
+                Tree newTree = new Tree(determineTree(tree));
+                currTreesInForest[x][y] = newTree;
+                setTree(newTree, x, y);
                 // With age, the ability to produce shoots decreases
                 if (currTreesInForest[x][y].getFertility() > 1) {
                     currTreesInForest[x][y].setFertility(currTreesInForest[x][y].getFertility() - currTreesInForest[x][y].getGrowthStep());

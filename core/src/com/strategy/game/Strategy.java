@@ -30,8 +30,11 @@ public class Strategy extends ApplicationAdapter {
 	private BitmapFont font;
 	private SpriteBatch batch;
 	private Season currentSeason;
-	private Season prevSeason;
 	private String climate;
+
+	private int yearCount = 0;
+	private int year = 0;
+
 	
 	@Override
 	public void create() {
@@ -39,7 +42,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 3000, 3000);
+		camera.setToOrtho(false, (w / h) * 2000, 2000);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -68,9 +71,14 @@ public class Strategy extends ApplicationAdapter {
 			while (true) {
 				try {
 					seasonChange.temperateSeasonChanging();
-					currentSeason = seasonChange.getCurrentSeason();
-					if (seasonChange.getCurrentSeasonIter() == 9)
+					if (seasonChange.getCurrentSeasonIter() == 9) {
 						forestChange.nextForestGrowsIter(seasonChange.determineTemperateNextSeason());
+						yearCount++;
+					}
+					if (yearCount == 4) {
+						year++;
+						yearCount = 0;
+					}
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
@@ -95,8 +103,8 @@ public class Strategy extends ApplicationAdapter {
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-		font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 40);
+		font.draw(batch, "Year: " + year, 10, 40);
+		font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 20);
 		batch.end();
 	}
 
