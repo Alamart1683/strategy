@@ -54,7 +54,7 @@ public class SeasonChange {
                     int y = (int) random.nextGaussian() * map.getHeight();
                     setTile(nextTile, x, y);
                 }
-                if (prevTiles.size() > 7) {
+                if (prevTiles.size() > 8) {
                     prevTiles.add(currTile);
                     prevTiles.remove(0);
                 }
@@ -62,7 +62,7 @@ public class SeasonChange {
                     prevTiles.add(currTile);
                 }
             } else {
-                if (prevTiles.size() > 7) {
+                if (prevTiles.size() > 8) {
                     prevTiles.add(currTile);
                     prevTiles.remove(0);
                 }
