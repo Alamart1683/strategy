@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.daemon.ForestChange;
+import com.strategy.game.map.daemon.GrassChange;
 import com.strategy.game.map.forest.Plant;
 import com.strategy.game.map.terrain.Season;
 import com.strategy.game.map.daemon.SeasonChange;
@@ -21,6 +22,9 @@ public class Strategy extends ApplicationAdapter {
 	Map map;
 	SeasonChange seasonChange;
 	ForestChange forestChange;
+
+	GrassChange grassChange;
+
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private CameraInputController cameraController;
@@ -42,7 +46,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 2000, 2000);
+		camera.setToOrtho(false, (w / h) * 1500, 1500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -55,8 +59,8 @@ public class Strategy extends ApplicationAdapter {
 		climate = "temperate";
 
 		map = new Map(
-				30,
-				30,
+				25,
+				25,
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
@@ -67,6 +71,9 @@ public class Strategy extends ApplicationAdapter {
 
 		forestChange = new ForestChange(map, climate, currentSeason);
 
+		grassChange = new GrassChange(map, climate, currentSeason);
+
+
 		new Thread(() -> {
 			while (true) {
 				try {
@@ -75,6 +82,7 @@ public class Strategy extends ApplicationAdapter {
 						forestChange.nextForestGrowsIter(seasonChange.determineTemperateNextSeason());
 						yearCount++;
 					}
+					grassChange.nextGrassGrowsIter(currentSeason);
 					if (yearCount == 4) {
 						year++;
 						yearCount = 0;
