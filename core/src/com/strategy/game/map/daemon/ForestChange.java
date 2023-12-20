@@ -49,7 +49,7 @@ public class ForestChange {
     }
 
     private void loadTrees(String climate, Season startSeason) throws IOException {
-        List<Path> paths = Files.list(Path.of("assets/tiles/climate/" + climate + "/forest")).toList();
+        List<Path> paths = Files.list(Path.of("assets/tiles/climate/" + climate + "/forest/trees")).toList();
         for (Path path: paths) {
             Texture texture = new Texture(path.toString());
             TextureRegion[][] tiles = TextureRegion.split(texture, map.getTileWidth(), map.getTileHeight());
