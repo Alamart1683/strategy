@@ -48,7 +48,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 350, 350);
+		camera.setToOrtho(false, (w / h) * 1500, 1500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -57,14 +57,14 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		currentSeason = Season.Spring;
+		currentSeason = Season.Autumn;
 		currentSeasonIter = 4;
 		climate = "temperate";
 		grassStartBirthIter = 3;
 
 		map = new Map(
-				3,
-				3,
+				25,
+				25,
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),

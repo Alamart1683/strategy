@@ -75,8 +75,14 @@ public class GrassChange {
                         if (startSeason != Season.Summer) {
                             newGrass.setTile(determineStartGrassTile(grass.getTiles(), startSeason, grassList.indexOf(grass)));
                         }
-                        setGrass(newGrass, i, j);
+                        else {
+                            newGrass.setAge(3);
+                        }
                     }
+                    if (startSeason == Season.Autumn) {
+                        newGrass.setAge(3);
+                    }
+                    setGrass(newGrass, i, j);
                 }
             }
         }
