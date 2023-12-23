@@ -56,7 +56,7 @@ public class ForestChange {
             Tree tree = new Tree(
                     path.getFileName().toString(),
                     PlantType.Tree,
-                    4,1, 3, 1, 30, 5,
+                    4,1, 3, 1, 30, 6,
                     determineStartTreeTile(tiles, startSeason),
                     tiles
             );

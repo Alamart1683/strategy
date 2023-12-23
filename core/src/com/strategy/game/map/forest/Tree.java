@@ -36,6 +36,7 @@ public class Tree extends Plant {
             // Death trigger
             Random random = new Random(getAge());
             if (getAge() > getAgeThreshold()) {
+                setTile(getTiles()[getGrowthStatus() - 1][4]);
                 if (random.nextInt(getAgeThreshold() + getAgeThreshold() / 10 - getAge()) == 0) {
                     setAlive(false);
                 }
@@ -109,10 +110,10 @@ public class Tree extends Plant {
 
     private void updateTreeAge(String currentSeason) {
         // Change growth sprite trigger
-        if (getAge() <= getAgeThreshold())
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
-        else // if tree is dead
-            setTile(getTiles()[getGrowthStatus() - 1][4]);
+        if (!getTile().equals(getTiles()[getGrowthStatus() - 1][4])) {
+            if (getAge() <= getAgeThreshold())
+                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
+        }
     }
 
     private void updateTreeSeason(String currentSeason, String newSeason) {
