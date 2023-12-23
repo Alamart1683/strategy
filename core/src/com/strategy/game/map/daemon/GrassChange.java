@@ -109,7 +109,7 @@ public class GrassChange {
     }
 
     public void growNewGrass(Grass grass, int i, int j) {
-        for (int k = 0; k < grass.getFertility(); k++) {
+        for (int k = 0; k < grass.getFertility() * grass.getFertility(); k++) {
             int x, y;
             if (k % 2 == 0) {
                 x = random.nextInt(i + 1, i + 2);
@@ -124,7 +124,7 @@ public class GrassChange {
                 x = random.nextInt(i - 2, i - 1);
                 y = random.nextInt(j - 2, j - 1);
             }
-            if (checkNearGrass(x, y)) {
+            if (checkNearGrass(x, y) && currGrassInForest[x][y] == null) {
                 Grass newGrass = new Grass(grass);
                 newGrass.setTile(newGrass.getTiles()[0][0]);
                 currGrassInForest[x][y] = newGrass;
