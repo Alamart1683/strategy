@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
 
 public class Tree extends Plant {
-    private int currentSeasonIter;
     private boolean isGrow;
     private Random random = new Random();
 
@@ -27,7 +26,6 @@ public class Tree extends Plant {
                 plant.getTile(),
                 plant.getTiles()
         );
-        currentSeasonIter = 0;
     }
 
     @Override
@@ -118,17 +116,19 @@ public class Tree extends Plant {
     }
 
     private void updateTreeSeason(String currentSeason, String newSeason) {
-        if (currentSeason.equals("Summer")) {
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
-        }
-        if (currentSeason.equals("Autumn")) {
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
-        }
-        if (currentSeason.equals("Winter")) {
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
-        }
-        if (currentSeason.equals("Spring")) {
-            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
+        if (!getTile().equals(getTiles()[getGrowthStatus() - 1][4])) {
+            if (currentSeason.equals("Summer")) {
+                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
+            }
+            if (currentSeason.equals("Autumn")) {
+                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
+            }
+            if (currentSeason.equals("Winter")) {
+                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
+            }
+            if (currentSeason.equals("Spring")) {
+                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(newSeason)]);
+            }
         }
     }
 

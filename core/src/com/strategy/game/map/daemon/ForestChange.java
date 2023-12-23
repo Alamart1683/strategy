@@ -56,7 +56,7 @@ public class ForestChange {
             Tree tree = new Tree(
                     path.getFileName().toString(),
                     PlantType.Tree,
-                    4,1, 3, 1, 30, 9,
+                    4,1, 3, 1, 30, 5,
                     determineStartTreeTile(tiles, startSeason),
                     tiles
             );
@@ -130,7 +130,7 @@ public class ForestChange {
                                 currTreesInForest[i][j].getGrowthStatus() == currTreesInForest[i][j].getGrowthThreshold() &&
                                 currentSeason != Season.Winter && currentSeason != Season.Autumn
                         ) {
-                            growNewTree(currTreesInForest[i][j], i, j);
+                            growNewTree(currTreesInForest[i][j], i, j, currentSeason);
                         }
                     }
                 }
@@ -138,7 +138,7 @@ public class ForestChange {
         }
     }
 
-    private void growNewTree(Tree tree, int i, int j) {
+    private void growNewTree(Tree tree, int i, int j, Season currentSeason) {
         for (int k = 0; k < tree.getFertility(); k++) {
             int x, y;
             if (k % 2 == 0) {
@@ -157,6 +157,7 @@ public class ForestChange {
             if (checkNearTrees(x, y) && currTreesInForest[x][y] == null) {
                 Tree newTree = new Tree(determineTree(tree));
                 currTreesInForest[x][y] = newTree;
+                newTree.setTile(determineStartTreeTile(newTree.getTiles(), currentSeason));
                 setTree(newTree, x, y);
                 // With age, the ability to produce shoots decreases
                 if (currTreesInForest[x][y].getFertility() > 1) {
