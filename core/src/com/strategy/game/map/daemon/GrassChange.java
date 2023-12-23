@@ -34,6 +34,7 @@ public class GrassChange {
         this.currentIter = 0;
         this.currGrassInForest = initializeCurrGrassInForest();
         loadGrass(climate, startSeason);
+        initializeGrass(startSeason);
     }
 
     private Grass[][] initializeCurrGrassInForest() {
@@ -59,104 +60,36 @@ public class GrassChange {
                     path.getFileName().toString(),
                     PlantType.Tree,
                     1,1, 3, 1, 3, 3,
-                    determineStartGrassTile(tiles, startSeason),
+                    tiles[paths.indexOf(path)][2], // 2 is default summer tile,
                     tiles
             );
             grassList.add(grass);
         }
     }
 
-    public void nextGrassGrowsIter(Season currentSeason) {
-        for (int i = 0; i < grassLayer.getWidth(); i++) {
-            for (int j = 0; j < grassLayer.getHeight(); j++) {
-                if (currGrassInForest[i][j] != null) {
-                    if (!currGrassInForest[i][j].isAlive()) {
-                        setGrass(null, i, j);
-                        currGrassInForest[i][j] = null;
-                    } else if (currGrassInForest[i][j].getStartGrowth().equals(currentSeason)) {
-                        if (random.nextInt((int) currGrassInForest[i][j].getLifeProbability() * 10) == 0) {
-                            int x = random.nextInt(grassLayer.getWidth());
-                            int y = random.nextInt(grassLayer.getHeight());
-                            // More uniform tree growth
-                            if (x < grassLayer.getWidth() / 5)
-                                x = grassLayer.getWidth() / 5;
-                            if (x > grassLayer.getWidth() - 5)
-                                x = grassLayer.getWidth() - 5;
-                            if (y < grassLayer.getHeight() / 5)
-                                y = grassLayer.getHeight() / 5;
-                            if (y > grassLayer.getHeight() - 5)
-                                y = grassLayer.getHeight() - 5;
-                            if (currGrassInForest[x][y] == null) {
-                                setGrass(new Grass(determineGrass(currGrassInForest[i][j])), x, y);
+    public void initializeGrass(Season startSeason) {
+        for (Grass grass: grassList) {
+            for (int i = 0; i < currGrassInForest.length; i++) {
+                for (int j = 0; j < currGrassInForest[0].length; j++) {
+                    int probability = random.nextInt((int)(((grass.getLifeProbability() * currentIter) / (double) grassList.size()) * 10.));
+                    Grass newGrass = new Grass(grass);
+                    if (probability == 0) {
+                        if (startSeason != Season.Winter) {
+                            if (startSeason != Season.Summer) {
+                                newGrass.setTile(determineStartGrassTile(grass.getTiles(), startSeason, grassList.indexOf(grass)));
                             }
-                        }
-                        currGrassInForest[i][j].grow(currentSeason.name());
-                        setGrass(currGrassInForest[i][j], i, j);
-                    }
-                    else if (!currentSeason.equals(Season.Winter) && currentIter == 0) {
-                        if (random.nextInt((int) (currGrassInForest[i][j].getLifeProbability() * 10)) == 0) {
-                            int x = random.nextInt(grassLayer.getWidth());
-                            int y = random.nextInt(grassLayer.getHeight());
-                            // More uniform tree growth
-                            if (x < grassLayer.getWidth() / 5)
-                                x = grassLayer.getWidth() / 5;
-                            if (x > grassLayer.getWidth() - 5)
-                                x = grassLayer.getWidth() - 5;
-                            if (y < grassLayer.getHeight() / 5)
-                                y = grassLayer.getHeight() / 5;
-                            if (y > grassLayer.getHeight() - 5)
-                                y = grassLayer.getHeight() - 5;
-                            if (currGrassInForest[x][y] == null) {
-                                setGrass(new Grass(determineGrass(currGrassInForest[i][j])), i, j);
-                            }
-                        } else {
-                            currGrassInForest[i][j].grow(currentSeason.name());
-                            setGrass(currGrassInForest[i][j], i, j);
-                        }
-                    } else if (!currentSeason.equals(Season.Winter)) {
-                        currGrassInForest[i][j].grow(currentSeason.name());
-                        setGrass(currGrassInForest[i][j], i, j);
-                    }
-                } else {
-                    if (grassList.get(0).getStartGrowth().equals(currentSeason)) {
-                        if (random.nextInt((int) (grassList.get(0).getLifeProbability() * 10)) == 0) {
-                            int x = random.nextInt(grassLayer.getWidth());
-                            int y = random.nextInt(grassLayer.getHeight());
-                            // More uniform tree growth
-                            if (x < grassLayer.getWidth() / 5)
-                                x = grassLayer.getWidth() / 5;
-                            if (x > grassLayer.getWidth() - 5)
-                                x = grassLayer.getWidth() - 5;
-                            if (y < grassLayer.getHeight() / 5)
-                                y = grassLayer.getHeight() / 5;
-                            if (y > grassLayer.getHeight() - 5)
-                                y = grassLayer.getHeight() - 5;
-                            if (currGrassInForest[x][y] == null) {
-                                setGrass(new Grass(grassList.get(0)), x, y);
-                            }
-                        }
-                        currGrassInForest[i][j].grow(currentSeason.name());
-                        setGrass(currGrassInForest[i][j], i, j);
-                    }
-                    else if (!currentSeason.equals(Season.Winter) && currentIter == 0) {
-                        if (random.nextInt((int) (grassList.get(0).getLifeProbability() * 10)) == 0) {
-                            int x = random.nextInt(grassLayer.getWidth());
-                            int y = random.nextInt(grassLayer.getHeight());
-                            // More uniform tree growth
-                            if (x < grassLayer.getWidth() / 5)
-                                x = grassLayer.getWidth() / 5;
-                            if (x > grassLayer.getWidth() - 5)
-                                x = grassLayer.getWidth() - 5;
-                            if (y < grassLayer.getHeight() / 5)
-                                y = grassLayer.getHeight() / 5;
-                            if (y > grassLayer.getHeight() - 5)
-                                y = grassLayer.getHeight() - 5;
-                            if (currGrassInForest[x][y] == null) {
-                                setGrass(new Grass(grassList.get(0)), i, j);
-                            }
+                            setGrass(newGrass, i, j);
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void nextGrassGrowsIter(Season currentSeason) {
+        for (int i = 0; i < grassLayer.getWidth(); i++) {
+            for (int j = 0; j < grassLayer.getHeight(); j++) {
+
             }
         }
     }
@@ -180,19 +113,19 @@ public class GrassChange {
         }
     }
 
-    private TextureRegion determineStartGrassTile(TextureRegion[][] tiles, Season startSeason) {
+    private TextureRegion determineStartGrassTile(TextureRegion[][] tiles, Season startSeason, int grassIndex) {
         switch (startSeason) {
             case Spring -> {
-                return tiles[0][0];
+                return tiles[grassIndex][0];
             }
             case Summer -> {
-                return tiles[0][2];
+                return tiles[grassIndex][2];
             }
             case Autumn -> {
-                return tiles[0][3];
+                return tiles[grassIndex][3];
             }
             default -> {
-                return tiles[0][4];
+                return tiles[grassIndex][4];
             }
         }
     }
