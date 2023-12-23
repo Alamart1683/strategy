@@ -38,6 +38,7 @@ public class Map {
         TextureRegion startTile = determineDefaultSeasonTile();
         TiledMapTileLayer tileLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
         TiledMapTileLayer forestLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+        TiledMapTileLayer grassLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
         transparent = TextureRegion.split(new Texture("assets/tiles/transparent.png"), width, height)[0][0];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -48,10 +49,15 @@ public class Map {
                 TiledMapTileLayer.Cell forestCell = new TiledMapTileLayer.Cell();
                 forestCell.setTile(new StaticTiledMapTile(transparent));
                 forestLayer.setCell(i, j, forestCell);
+
+                TiledMapTileLayer.Cell grassCell = new TiledMapTileLayer.Cell();
+                grassCell.setTile(new StaticTiledMapTile(transparent));
+                grassLayer.setCell(i, j, grassCell);
             }
         }
         layers.add(tileLayer);
         layers.add(forestLayer);
+        layers.add(grassLayer);
         return map;
     }
 

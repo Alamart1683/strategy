@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.daemon.ForestChange;
+import com.strategy.game.map.daemon.GrassChange;
 import com.strategy.game.map.forest.Plant;
 import com.strategy.game.map.terrain.Season;
 import com.strategy.game.map.daemon.SeasonChange;
@@ -21,6 +22,9 @@ public class Strategy extends ApplicationAdapter {
 	Map map;
 	SeasonChange seasonChange;
 	ForestChange forestChange;
+
+	GrassChange grassChange;
+
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private CameraInputController cameraController;
@@ -31,6 +35,8 @@ public class Strategy extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Season currentSeason;
 	private String climate;
+	private int currentSeasonIter;
+	private int grassStartBirthIter;
 
 	private int yearCount = 0;
 	private int year = 0;
@@ -42,7 +48,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 2000, 2000);
+		camera.setToOrtho(false, (w / h) * 1500, 1500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -51,30 +57,36 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		currentSeason = Season.Summer;
+		currentSeason = Season.Spring;
+		currentSeasonIter = 4;
 		climate = "temperate";
+		grassStartBirthIter = 3;
 
 		map = new Map(
-				30,
-				30,
+				25,
+				25,
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
-				Season.Summer
+				currentSeason
 		);
 
-		seasonChange = new SeasonChange(map);
+		seasonChange = new SeasonChange(map, currentSeasonIter);
 
 		forestChange = new ForestChange(map, climate, currentSeason);
+
+		grassChange = new GrassChange(map, climate, currentSeason, grassStartBirthIter);
 
 		new Thread(() -> {
 			while (true) {
 				try {
-					seasonChange.temperateSeasonChanging();
+					currentSeasonIter = seasonChange.temperateSeasonChanging(currentSeasonIter);
 					if (seasonChange.getCurrentSeasonIter() == 9) {
-						forestChange.nextForestGrowsIter(seasonChange.determineTemperateNextSeason());
+						currentSeason = (seasonChange.determineTemperateNextSeason());
+						forestChange.nextForestGrowsIter(currentSeason);
 						yearCount++;
 					}
+					grassChange.nextGrassGrowsIter(currentSeason, currentSeasonIter);
 					if (yearCount == 4) {
 						year++;
 						yearCount = 0;
@@ -84,14 +96,6 @@ public class Strategy extends ApplicationAdapter {
 				}
 			}
 		}).start();
-
-		/*
-		new Thread(() -> {
-			while (true) {
-				forestChange.nextForestGrowsIter(currentSeason);
-			}
-		}).start();
-		 */
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
