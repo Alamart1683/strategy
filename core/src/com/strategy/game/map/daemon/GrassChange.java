@@ -98,7 +98,7 @@ public class GrassChange {
                             growNewGrass(grass, i, j);
                         }
                     }
-                    currentGrass.grow(currentSeason.name());
+                    currentGrass.grow(currentSeason.name(), currentSeasonIter);
                     if (currentGrass.isAlive())
                         setGrass(currentGrass, i, j);
                     else

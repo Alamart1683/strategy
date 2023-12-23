@@ -87,12 +87,9 @@ public class SeasonChange {
                                 }
                             }
                         }
-                        if (layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && isNotAddedTile(addedTerrains, i, j)) {
+                        if (layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && !prevTiles.contains(layer.getCell(i, j).getTile().getTextureRegion()) ) {
                             setTile(nextTile, i, j);
                             addedTerrains.add(new SuitableTerrain(nextTile, i, j));
-                        }
-                        if (!layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && isNotAddedTile(addedTerrains, i, j) && currentSeasonIter == 5) {
-                            setTile(currTile, i, j);
                         }
                     }
                 }
@@ -100,7 +97,7 @@ public class SeasonChange {
             currentSeasonIter++;
         }
         this.currentSeasonIter = currentSeasonIter;
-        Thread.sleep(300);
+        Thread.sleep(1000);
         return currentSeasonIter;
     }
 

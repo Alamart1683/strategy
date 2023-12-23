@@ -115,7 +115,7 @@ public class ForestChange {
         }
     }
 
-    public void nextForestGrowsIter(Season currentSeason) {
+    public void nextForestGrowsIter(Season currentSeason, int currentSeasonIter) {
         for (int i = 0; i < forest.getWidth(); i++) {
             for (int j = 0; j < forest.getHeight(); j++) {
                 if (currTreesInForest[i][j] != null) {
@@ -124,7 +124,7 @@ public class ForestChange {
                         currTreesInForest[i][j] = null;
                     }
                     else {
-                        currTreesInForest[i][j].grow(currentSeason.name());
+                        currTreesInForest[i][j].grow(currentSeason.name(), currentSeasonIter);
                         setTree(currTreesInForest[i][j], i, j);
                         if (currTreesInForest[i][j].getAge() % currTreesInForest[i][j].getFertility() == 0 &&
                                 currTreesInForest[i][j].getGrowthStatus() == currTreesInForest[i][j].getGrowthThreshold() &&

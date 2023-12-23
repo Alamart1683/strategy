@@ -56,7 +56,7 @@ public class Grass extends Plant {
     }
 
     @Override
-    public int grow(String currentSeason) {
+    public int grow(String currentSeason, int currentSeasonIter) {
         if (!currentSeason.equals(Season.Autumn.toString())) {
             setGrowthStatus(getLastGrowthStatus() + 1);
         }
