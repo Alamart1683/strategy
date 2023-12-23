@@ -49,9 +49,6 @@ public class Tree extends Plant {
                 newGrowthStatus = getLastGrowthStatus() + 1;
                 setGrowthStatus(newGrowthStatus);
             }
-            if (random.nextInt(5) == 0) {
-                updateTreeSeason(currentSeason, determineTemperatePrevSeason(currentSeason));
-            }
             return newGrowthStatus;
         } else {
             // tree growth trigger
