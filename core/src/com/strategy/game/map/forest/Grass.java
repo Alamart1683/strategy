@@ -11,13 +11,14 @@ public class Grass extends Plant {
     private Season startGrowth;
     private Season endGrowth;
     private double lifeProbability;
-
     private int startSeasonBirthIter;
+    private Random random = new Random();
+
 
     public Grass(Season startGrowth,
                  Season endGrowth,
                  double lifeProbability,
-                 int startSeasonBrithIter,
+                 int startSeasonBirthIter,
                  String plantName,
                  PlantType plantType,
                  int growthStep,
@@ -32,7 +33,7 @@ public class Grass extends Plant {
         this.startGrowth = startGrowth;
         this.endGrowth = endGrowth;
         this.lifeProbability = lifeProbability;
-        this.startSeasonBirthIter = startSeasonBrithIter;
+        this.startSeasonBirthIter = startSeasonBirthIter;
     }
 
     public Grass(Grass grass) {
@@ -56,38 +57,39 @@ public class Grass extends Plant {
 
     @Override
     public int grow(String currentSeason) {
-        setAge(getAge() + 1);
-        int newGrowthStatus = 0;
-        // Death trigger
-        Random random = new Random(getAge());
-        if (!isAlive()) {
-            setTile(getTiles()[0][4]);
+        int oldAge = getAge();
+        if (getAge() < getAgeThreshold()) {
+            if (random.nextInt(2) == 0) {
+                setAge(getAge() + 1);
+            }
         }
-        else if (isGrassAlive(Season.valueOf(currentSeason))) {
-            setAlive(false);
-            return newGrowthStatus;
-        }
-        // Growth trigger
-        if (getAge() % getGrowthStep() == 0 && getGrowthStatus() < getGrowthThreshold()) {
-            setLastGrowthStatus(getGrowthStatus());
-            newGrowthStatus = getLastGrowthStatus() + 1;
-            setGrowthStatus(newGrowthStatus);
-        }
-        // Change sprite trigger
-        if (isAlive() && !currentSeason.equals(endGrowth.name())) {
+        // tile changing
+        if (oldAge <= getAge()) {
             setTile(getTiles()[0][getAge() - 1]);
         }
-        else if (isAlive()) {
-            setTile(getTiles()[0][3]);
-            if (random.nextInt((int)getLifeProbability() * 10) == 0) {
+
+        if (getAge() == getAgeThreshold() && currentSeason.equals(Season.Autumn.toString())) {
+            if (random.nextInt(4) == 0) {
+                if (random.nextInt(7) == 0) {
+                    setAlive(false);
+                }
+                setTile(getTiles()[0][3]);
+            }
+        }
+        if (currentSeason.equals(Season.Autumn.toString()) && getTile().equals(getTiles()[0][3])) {
+            if (random.nextInt(3) == 0) {
                 setAlive(false);
             }
         }
-        else { // if grass is dead
-            setTile(getTiles()[0][4]);
+        if (currentSeason.equals(Season.Winter.toString())) {
+            if (isAlive()) {
+                if (random.nextInt(3) < 2) {
+                    setAlive(false);
+                }
+                setTile(getTiles()[0][3]);
+            }
         }
-
-        return newGrowthStatus;
+        return getAge();
     }
 
     @Override

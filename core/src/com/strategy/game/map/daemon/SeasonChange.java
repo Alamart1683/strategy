@@ -24,11 +24,11 @@ public class SeasonChange {
     private TiledMapTileLayer layer;
     ArrayList<TextureRegion> prevTiles = new ArrayList<>();
 
-    public SeasonChange(Map map) {
+    public SeasonChange(Map map, int currentSeasonIter) {
         this.map = map;
         this.tiles = map.getTextureRegions();
         this.currentSeason = map.getStartSeason();
-        this.currentSeasonIter = 4;
+        this.currentSeasonIter = currentSeasonIter;
         this.currTile = map.determineDefaultSeasonTile();
         this.nextTile = map.determineDefaultSeasonTile();
         this.layer = (TiledMapTileLayer) map.getMap().getLayers().get(0);
@@ -40,12 +40,11 @@ public class SeasonChange {
         layer.setCell(x, y, new TiledMapTileLayer.Cell().setTile(new StaticTiledMapTile(tile)));
     }
 
-    public void temperateSeasonChanging() throws InterruptedException {
+    public int temperateSeasonChanging(int currentSeasonIter) throws InterruptedException {
         if (currentSeasonIter == 9) {
             currentSeason = determineTemperateNextSeason();
             currentSeasonIter = 0;
-        }
-        while (currentSeasonIter < 9) {
+        } else {
             currTile = nextTile;
             nextTile = determineTemperateNextTile();
             if (currentSeasonIter == 5) {
@@ -96,17 +95,10 @@ public class SeasonChange {
                 }
             }
             currentSeasonIter++;
-            Thread.sleep(300);
         }
-    }
-
-    private boolean isInPrevTiles(TextureRegion tile) {
-        for (TextureRegion prevTile: prevTiles) {
-            if (prevTile.equals(tile)) {
-                return true;
-            }
-        }
-        return false;
+        this.currentSeasonIter = currentSeasonIter;
+        Thread.sleep(1000);
+        return currentSeasonIter;
     }
 
     private boolean isNotAddedTile(ArrayList<SuitableTerrain> addedTerrains, int x, int y) {

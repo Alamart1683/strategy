@@ -35,6 +35,8 @@ public class Strategy extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Season currentSeason;
 	private String climate;
+	private int currentSeasonIter;
+	private int grassStartBirthIter;
 
 	private int yearCount = 0;
 	private int year = 0;
@@ -55,8 +57,10 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		currentSeason = Season.Summer;
+		currentSeason = Season.Spring;
+		currentSeasonIter = 4;
 		climate = "temperate";
+		grassStartBirthIter = 3;
 
 		map = new Map(
 				25,
@@ -64,25 +68,25 @@ public class Strategy extends ApplicationAdapter {
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
-				Season.Summer
+				currentSeason
 		);
 
-		seasonChange = new SeasonChange(map);
+		seasonChange = new SeasonChange(map, currentSeasonIter);
 
 		forestChange = new ForestChange(map, climate, currentSeason);
 
-		grassChange = new GrassChange(map, climate, currentSeason);
-
+		grassChange = new GrassChange(map, climate, currentSeason, grassStartBirthIter);
 
 		new Thread(() -> {
 			while (true) {
 				try {
-					seasonChange.temperateSeasonChanging();
+					currentSeasonIter = seasonChange.temperateSeasonChanging(currentSeasonIter);
 					if (seasonChange.getCurrentSeasonIter() == 9) {
-						forestChange.nextForestGrowsIter(seasonChange.determineTemperateNextSeason());
+						currentSeason = (seasonChange.determineTemperateNextSeason());
+						forestChange.nextForestGrowsIter(currentSeason);
 						yearCount++;
 					}
-					grassChange.nextGrassGrowsIter(currentSeason);
+					grassChange.nextGrassGrowsIter(currentSeason, currentSeasonIter);
 					if (yearCount == 4) {
 						year++;
 						yearCount = 0;
@@ -92,14 +96,6 @@ public class Strategy extends ApplicationAdapter {
 				}
 			}
 		}).start();
-
-		/*
-		new Thread(() -> {
-			while (true) {
-				forestChange.nextForestGrowsIter(currentSeason);
-			}
-		}).start();
-		 */
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
