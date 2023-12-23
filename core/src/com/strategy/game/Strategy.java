@@ -57,7 +57,7 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		currentSeason = Season.Spring;
+		currentSeason = Season.Autumn;
 		currentSeasonIter = 4;
 		climate = "temperate";
 		grassStartBirthIter = 3;
@@ -82,10 +82,10 @@ public class Strategy extends ApplicationAdapter {
 				try {
 					currentSeasonIter = seasonChange.temperateSeasonChanging(currentSeasonIter);
 					if (seasonChange.getCurrentSeasonIter() == 9) {
-						currentSeason = (seasonChange.determineTemperateNextSeason());
-						forestChange.nextForestGrowsIter(currentSeason);
+						currentSeason = seasonChange.determineTemperateNextSeason();
 						yearCount++;
 					}
+					forestChange.nextForestGrowsIter(currentSeason, currentSeasonIter);
 					grassChange.nextGrassGrowsIter(currentSeason, currentSeasonIter);
 					if (yearCount == 4) {
 						year++;

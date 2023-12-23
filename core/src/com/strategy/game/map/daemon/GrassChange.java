@@ -7,7 +7,6 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.forest.Grass;
 import com.strategy.game.map.forest.PlantType;
-import com.strategy.game.map.forest.Tree;
 import com.strategy.game.map.terrain.Season;
 import lombok.SneakyThrows;
 
@@ -76,8 +75,14 @@ public class GrassChange {
                         if (startSeason != Season.Summer) {
                             newGrass.setTile(determineStartGrassTile(grass.getTiles(), startSeason, grassList.indexOf(grass)));
                         }
-                        setGrass(newGrass, i, j);
+                        else {
+                            newGrass.setAge(3);
+                        }
                     }
+                    if (startSeason == Season.Autumn) {
+                        newGrass.setAge(3);
+                    }
+                    setGrass(newGrass, i, j);
                 }
             }
         }
@@ -98,7 +103,7 @@ public class GrassChange {
                             growNewGrass(grass, i, j);
                         }
                     }
-                    currentGrass.grow(currentSeason.name());
+                    currentGrass.grow(currentSeason.name(), currentSeasonIter);
                     if (currentGrass.isAlive())
                         setGrass(currentGrass, i, j);
                     else

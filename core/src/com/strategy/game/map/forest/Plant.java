@@ -65,7 +65,7 @@ public abstract class Plant {
         this.tiles = tiles;
     }
 
-    public abstract int grow(String currentSeason);
+    public abstract int grow(String currentSeason, int currentSeasonIter);
 
     public int determineSeason(String currentSeason) {
         switch (currentSeason) {
