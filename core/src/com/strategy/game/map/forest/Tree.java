@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class Tree extends Plant {
     private int currentSeasonIter;
+    private boolean isGrow;
     private Random random = new Random();
 
     public Tree(String plantName, PlantType plantType, int growthStep, int growthStatus, int growthThreshold, int age, int ageThreshold, int fertility, TextureRegion tile, TextureRegion[][] tiles) {
@@ -43,36 +44,80 @@ public class Tree extends Plant {
             }
             // Growth trigger
             if (getAge() % getGrowthStep() == 0 && getGrowthStatus() < getGrowthThreshold()) {
+                isGrow = true;
                 setLastGrowthStatus(getGrowthStatus());
                 newGrowthStatus = getLastGrowthStatus() + 1;
                 setGrowthStatus(newGrowthStatus);
             }
-            // Change growth sprite trigger
-            if (getAge() <= getAgeThreshold())
-                setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
-            else // if tree is dead
-                setTile(getTiles()[getGrowthStatus() - 1][4]);
+            if (random.nextInt(5) == 0) {
+                updateTreeSeason(currentSeason, determineTemperatePrevSeason(currentSeason));
+            }
             return newGrowthStatus;
+
         } else {
-            switch (currentSeasonIter) {
-                case 6 -> {
-                    if (random.nextInt(8) == 0) {
-                        updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
-                    }
+            // tree growth trigger
+            if (currentSeasonIter > 1 && currentSeasonIter < 7 && isGrow) {
+                if (currentSeasonIter == 6) {
+                    updateTreeAge(determineTemperateNextSeason(currentSeason));
+                    isGrow = false;
+                } else if (currentSeasonIter == 5 && random.nextInt(2) == 0) {
+                    updateTreeAge(currentSeason);
+                    isGrow = false;
+                } else if (currentSeasonIter == 4 && random.nextInt(2) == 0) {
+                    updateTreeAge(currentSeason);
+                    isGrow = false;
+                } else if ((currentSeasonIter == 3) && random.nextInt(2) == 0) {
+                    updateTreeAge(currentSeason);
+                    isGrow = false;
+                } else if ((currentSeasonIter == 2) && random.nextInt(2) == 0) {
+                    updateTreeAge(determineTemperateNextSeason(currentSeason));
+                    isGrow = false;
                 }
-                case 7 -> {
-                    if (random.nextInt(5) == 0) {
-                        updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
+            } else {
+                switch (currentSeasonIter) {
+                    case 0 -> {
+                        if (random.nextInt(3) == 0) {
+                            updateTreeSeason(determineTemperatePrevSeason(currentSeason), currentSeason);
+                        }
                     }
+                    case 1 -> {
+                        if (random.nextInt(2) == 0) {
+                            updateTreeSeason(determineTemperatePrevSeason(currentSeason), currentSeason);
+                        }
+                    }
+                    case 2 -> updateTreeSeason(determineTemperatePrevSeason(currentSeason), currentSeason);
                 }
-                case 8 -> {
-                    if (random.nextInt(2) == 0) {
-                        updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
+
+                // tree season trigger after
+                switch (currentSeasonIter) {
+                    case 6 -> {
+                        if (random.nextInt(12) == 0) {
+                            updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
+                        }
+                    }
+                    case 7 -> {
+                        if (random.nextInt(9) == 0) {
+                            updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
+                        }
+                    }
+                    case 8 -> {
+                        if (random.nextInt(7) == 0) {
+                            updateTreeSeason(currentSeason, determineTemperateNextSeason(currentSeason));
+                        }
                     }
                 }
             }
+            // tree season trigger before
         }
         return 0;
+    }
+
+    private void updateTreeAge(String currentSeason) {
+        // Change growth sprite trigger
+        if (getAge() <= getAgeThreshold())
+            setTile(getTiles()[getGrowthStatus() - 1][determineSeason(currentSeason)]);
+        else // if tree is dead
+            setTile(getTiles()[getGrowthStatus() - 1][4]);
     }
 
     private void updateTreeSeason(String currentSeason, String newSeason) {

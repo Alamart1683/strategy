@@ -97,7 +97,7 @@ public class SeasonChange {
             currentSeasonIter++;
         }
         this.currentSeasonIter = currentSeasonIter;
-        Thread.sleep(1000);
+        Thread.sleep(500);
         return currentSeasonIter;
     }
 

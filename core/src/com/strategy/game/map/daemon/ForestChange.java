@@ -108,7 +108,6 @@ public class ForestChange {
                     y = forest.getHeight() / 5;
                 if (y > forest.getHeight() - 5)
                     y = forest.getHeight() - 5;
-
                 Tree tree = new Tree(trees.get(j));
                 setTree(tree, x, y);
             }
@@ -154,7 +153,7 @@ public class ForestChange {
                 x = random.nextInt(i - 4, i - 1);
                 y = random.nextInt(j - 4, j - 1);
             }
-            if (checkNearTrees(x, y)) {
+            if (checkNearTrees(x, y) && currTreesInForest[x][y] == null) {
                 Tree newTree = new Tree(determineTree(tree));
                 currTreesInForest[x][y] = newTree;
                 setTree(newTree, x, y);
