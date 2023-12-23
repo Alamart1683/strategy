@@ -57,6 +57,9 @@ public class Grass extends Plant {
 
     @Override
     public int grow(String currentSeason) {
+        if (!currentSeason.equals(Season.Autumn.toString())) {
+            setGrowthStatus(getLastGrowthStatus() + 1);
+        }
         int oldAge = getAge();
         if (getAge() < getAgeThreshold()) {
             if (random.nextInt(2) == 0) {
@@ -64,29 +67,28 @@ public class Grass extends Plant {
             }
         }
         // tile changing
-        if (oldAge <= getAge()) {
+        if (oldAge < getAge()) {
             setTile(getTiles()[0][getAge() - 1]);
         }
 
-        if (getAge() == getAgeThreshold() && currentSeason.equals(Season.Autumn.toString())) {
-            if (random.nextInt(4) == 0) {
-                if (random.nextInt(7) == 0) {
-                    setAlive(false);
-                }
+        if (getTile().equals(getTiles()[0][2]) && currentSeason.equals(Season.Autumn.toString())) {
+            if (random.nextInt(getGrowthStatus()) == 0) {
+                setGrowthStatus(getGrowthStatus() - 1);
                 setTile(getTiles()[0][3]);
             }
         }
-        if (currentSeason.equals(Season.Autumn.toString()) && getTile().equals(getTiles()[0][3])) {
-            if (random.nextInt(3) == 0) {
+        else if (currentSeason.equals(Season.Autumn.toString()) && getTile().equals(getTiles()[0][3])) {
+            if (random.nextInt(getGrowthStatus() * getAge() + (((getAge() * getAge()) / 2))) == 0) {
+                setGrowthStatus(getGrowthStatus() - 1);
                 setAlive(false);
             }
         }
         if (currentSeason.equals(Season.Winter.toString())) {
             if (isAlive()) {
-                if (random.nextInt(3) < 2) {
-                    setAlive(false);
-                }
-                setTile(getTiles()[0][3]);
+                    setTile(getTiles()[0][3]);
+            }
+            if (random.nextInt(3) < 2) {
+                setAlive(false);
             }
         }
         return getAge();

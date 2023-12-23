@@ -91,13 +91,16 @@ public class SeasonChange {
                             setTile(nextTile, i, j);
                             addedTerrains.add(new SuitableTerrain(nextTile, i, j));
                         }
+                        if (!layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && isNotAddedTile(addedTerrains, i, j) && currentSeasonIter == 5) {
+                            setTile(currTile, i, j);
+                        }
                     }
                 }
             }
             currentSeasonIter++;
         }
         this.currentSeasonIter = currentSeasonIter;
-        Thread.sleep(1000);
+        Thread.sleep(300);
         return currentSeasonIter;
     }
 

@@ -69,7 +69,7 @@ public class GrassChange {
         for (int i = 0; i < currGrassInForest.length; i++) {
             for (int j = 0; j < currGrassInForest[0].length; j++) {
                 Grass grass = grassList.get(random.nextInt(grassList.size()));
-                int probability = random.nextInt((int)((grass.getLifeProbability() * 15) / grassList.size() * 5.)); // 4 is default start season iter
+                int probability = random.nextInt((int) ((grass.getLifeProbability() * 10) / grassList.size() * 5.));
                 Grass newGrass = new Grass(grass);
                 if (probability == 0) {
                     if (startSeason != Season.Winter) {
@@ -84,16 +84,15 @@ public class GrassChange {
     }
 
     public void nextGrassGrowsIter(Season currentSeason, int currentSeasonIter) {
+        if (currentSeason == Season.Spring && currentSeasonIter == 0) {
+            growSpringGrass(20);
+        }
         for (int i = 0; i < grassLayer.getWidth(); i++) {
             for (int j = 0; j < grassLayer.getHeight(); j++) {
                 Grass currentGrass = currGrassInForest[i][j];
+                Grass grass = grassList.get(random.nextInt(grassList.size()));
                 if (currentGrass != null) {
-                    Grass grass = grassList.get(random.nextInt(grassList.size()));
-                    if (currentSeason == Season.Spring && currentSeasonIter == grass.getStartSeasonBirthIter() - 1) {
-                        initializeGrass(currentSeason);
-                    }
-                    else if (currentSeason == Season.Spring && currentSeasonIter >= grass.getStartSeasonBirthIter()) {
-                        System.out.println(currentSeason);
+                    if (currentSeason == Season.Spring && currentSeasonIter >= grass.getStartSeasonBirthIter()) {
                         int probability = random.nextInt((int) (grass.getLifeProbability() * currentSeasonIter * currentSeasonIter + 1));
                         if (probability == 0) {
                             growNewGrass(grass, i, j);
@@ -131,6 +130,20 @@ public class GrassChange {
                 currGrassInForest[x][y] = newGrass;
                 setGrass(newGrass, x, y);
                 return;
+            }
+        }
+    }
+
+    private void growSpringGrass(int birthChange) {
+        for (int i = 0; i < currGrassInForest.length; i++) {
+            for (int j = 0; j < currGrassInForest[0].length; j++) {
+                Grass grass = grassList.get(random.nextInt(grassList.size()));
+                int probability = random.nextInt((int) ((grass.getLifeProbability() * birthChange) / grassList.size() * 5.));
+                Grass newGrass = new Grass(grass);
+                if (probability == 0) {
+                    newGrass.setTile(newGrass.getTiles()[0][0]);
+                    setGrass(newGrass, i, j);
+                }
             }
         }
     }
@@ -196,15 +209,6 @@ public class GrassChange {
             }
         }
         return false;
-    }
-
-    private Grass determineGrass(Grass grass) {
-        for(Grass currGrass: grassList) {
-            if (currGrass.getPlantName().equals(grass.getPlantName())) {
-                return currGrass;
-            }
-        }
-        return grassList.get(0);
     }
 
     private void setGrass(Grass grass, int x, int y) {
