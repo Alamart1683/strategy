@@ -7,7 +7,6 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.forest.Grass;
 import com.strategy.game.map.forest.PlantType;
-import com.strategy.game.map.forest.Tree;
 import com.strategy.game.map.terrain.Season;
 import lombok.SneakyThrows;
 

@@ -53,7 +53,7 @@ public class SeasonChange {
                     int y = (int) random.nextGaussian() * map.getHeight();
                     setTile(nextTile, x, y);
                 }
-                if (prevTiles.size() > 8) {
+                if (prevTiles.size() > 6) {
                     prevTiles.add(currTile);
                     prevTiles.remove(0);
                 }
@@ -61,7 +61,7 @@ public class SeasonChange {
                     prevTiles.add(currTile);
                 }
             } else {
-                if (prevTiles.size() > 8) {
+                if (prevTiles.size() > 6) {
                     prevTiles.add(currTile);
                     prevTiles.remove(0);
                 }
@@ -87,9 +87,9 @@ public class SeasonChange {
                                 }
                             }
                         }
-                        if (layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && !prevTiles.contains(layer.getCell(i, j).getTile().getTextureRegion()) ) {
-                            setTile(nextTile, i, j);
-                            addedTerrains.add(new SuitableTerrain(nextTile, i, j));
+                        if (!layer.getCell(i, j).getTile().getTextureRegion().equals(currTile) && !prevTiles.contains(layer.getCell(i, j).getTile().getTextureRegion()) ) {
+                            setTile(prevTiles.get(0), i, j);
+                            addedTerrains.add(new SuitableTerrain(prevTiles.get(0), i, j));
                         }
                     }
                 }
@@ -97,7 +97,7 @@ public class SeasonChange {
             currentSeasonIter++;
         }
         this.currentSeasonIter = currentSeasonIter;
-        Thread.sleep(500);
+        Thread.sleep(300);
         return currentSeasonIter;
     }
 

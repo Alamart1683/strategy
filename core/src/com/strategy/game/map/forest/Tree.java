@@ -53,12 +53,11 @@ public class Tree extends Plant {
                 updateTreeSeason(currentSeason, determineTemperatePrevSeason(currentSeason));
             }
             return newGrowthStatus;
-
         } else {
             // tree growth trigger
             if (currentSeasonIter > 1 && currentSeasonIter < 7 && isGrow) {
                 if (currentSeasonIter == 6) {
-                    updateTreeAge(determineTemperateNextSeason(currentSeason));
+                    updateTreeAge(currentSeason);
                     isGrow = false;
                 } else if (currentSeasonIter == 5 && random.nextInt(2) == 0) {
                     updateTreeAge(currentSeason);
@@ -70,10 +69,11 @@ public class Tree extends Plant {
                     updateTreeAge(currentSeason);
                     isGrow = false;
                 } else if ((currentSeasonIter == 2) && random.nextInt(2) == 0) {
-                    updateTreeAge(determineTemperateNextSeason(currentSeason));
+                    updateTreeAge(currentSeason);
                     isGrow = false;
                 }
-            } else {
+            } else
+            {
                 switch (currentSeasonIter) {
                     case 0 -> {
                         if (random.nextInt(3) == 0) {
