@@ -48,7 +48,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 1500, 1500);
+		camera.setToOrtho(false, (w / h) * 3500, 3500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -63,8 +63,8 @@ public class Strategy extends ApplicationAdapter {
 		grassStartBirthIter = 3;
 
 		map = new Map(
-				25,
-				25,
+				50,
+				50,
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),

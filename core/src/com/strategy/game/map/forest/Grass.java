@@ -92,7 +92,6 @@ public class Grass extends Plant {
         if (currentSeason.equals(Season.Autumn.toString()) && currentSeasonIter == 8) {
             if (isAlive() && !getTile().equals(getTiles()[0][3])) {
                 setTile(getTiles()[0][3]);
-                System.out.println("SSSSSSSSSSSSSSSSSSSSS");
             }
         }
         if (currentSeason.equals(Season.Winter.toString())) {
