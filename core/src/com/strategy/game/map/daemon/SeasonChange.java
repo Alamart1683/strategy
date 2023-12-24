@@ -95,9 +95,9 @@ public class SeasonChange {
                 }
             }
             currentSeasonIter++;
+            Thread.sleep(700);
         }
         this.currentSeasonIter = currentSeasonIter;
-        Thread.sleep(300);
         return currentSeasonIter;
     }
 

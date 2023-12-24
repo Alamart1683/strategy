@@ -71,6 +71,12 @@ public class Grass extends Plant {
             setTile(getTiles()[0][getAge() - 1]);
         }
 
+        if (getTile().equals(getTiles()[0][2]) && currentSeason.equals(Season.Summer.toString()) &&
+                currentSeasonIter > 5 && currentSeasonIter < 9) {
+            if (random.nextInt(getGrowthStatus() + 20 - currentSeasonIter) == 0) {
+                setTile(getTiles()[0][3]);
+            }
+        }
         if (getTile().equals(getTiles()[0][2]) && currentSeason.equals(Season.Autumn.toString())) {
             if (random.nextInt(getGrowthStatus()) == 0) {
                 setGrowthStatus(getGrowthStatus() - 1);
@@ -83,11 +89,14 @@ public class Grass extends Plant {
                 setAlive(false);
             }
         }
-        if (currentSeason.equals(Season.Winter.toString())) {
-            if (isAlive()) {
-                    setTile(getTiles()[0][3]);
+        if (currentSeason.equals(Season.Autumn.toString()) && currentSeasonIter == 8) {
+            if (isAlive() && !getTile().equals(getTiles()[0][3])) {
+                setTile(getTiles()[0][3]);
+                System.out.println("SSSSSSSSSSSSSSSSSSSSS");
             }
-            if (random.nextInt(3) < 2) {
+        }
+        if (currentSeason.equals(Season.Winter.toString())) {
+            if (random.nextInt(4) < 3) {
                 setAlive(false);
             }
         }

@@ -89,7 +89,7 @@ public class GrassChange {
     }
 
     public void nextGrassGrowsIter(Season currentSeason, int currentSeasonIter) {
-        if (currentSeason == Season.Spring && currentSeasonIter == 0) {
+        if (currentSeason == Season.Winter && currentSeasonIter == 8) {
             growSpringGrass(20);
         }
         for (int i = 0; i < grassLayer.getWidth(); i++) {
@@ -97,7 +97,7 @@ public class GrassChange {
                 Grass currentGrass = currGrassInForest[i][j];
                 Grass grass = grassList.get(random.nextInt(grassList.size()));
                 if (currentGrass != null) {
-                    if (currentSeason == Season.Spring && currentSeasonIter >= grass.getStartSeasonBirthIter()) {
+                    if (currentSeason == Season.Spring) {
                         int probability = random.nextInt((int) (grass.getLifeProbability() * currentSeasonIter * currentSeasonIter + 1));
                         if (probability == 0) {
                             growNewGrass(grass, i, j);
