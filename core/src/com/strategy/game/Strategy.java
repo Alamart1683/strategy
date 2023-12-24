@@ -57,7 +57,7 @@ public class Strategy extends ApplicationAdapter {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		currentSeason = Season.Autumn;
+		currentSeason = Season.Summer;
 		currentSeasonIter = 4;
 		climate = "temperate";
 		grassStartBirthIter = 3;

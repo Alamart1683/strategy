@@ -140,32 +140,34 @@ public class ForestChange {
 
     private void growNewTree(Tree tree, int i, int j, Season currentSeason) {
         for (int k = 0; k < tree.getFertility(); k++) {
-            int x, y;
-            if (k % 2 == 0) {
-                x = random.nextInt(i + 1, i + 4);
-                y = random.nextInt(j + 1, j + 4);
-            } else if (k % 3 == 0) {
-                x = random.nextInt(i + 1, i + 4);
-                y = random.nextInt(j - 4, j - 1);
-            } else if (k % 5 == 0) {
-                x = random.nextInt(i - 4, i - 1);
-                y = random.nextInt(j + 1, j + 4);
-            } else {
-                x = random.nextInt(i - 4, i - 1);
-                y = random.nextInt(j - 4, j - 1);
-            }
-            if (checkNearTrees(x, y) && currTreesInForest[x][y] == null) {
-                Tree newTree = new Tree(determineTree(tree));
-                currTreesInForest[x][y] = newTree;
-                newTree.setTile(determineStartTreeTile(newTree.getTiles(), currentSeason));
-                setTree(newTree, x, y);
-                // With age, the ability to produce shoots decreases
-                if (currTreesInForest[x][y].getFertility() > 1) {
-                    currTreesInForest[x][y].setFertility(currTreesInForest[x][y].getFertility() - currTreesInForest[x][y].getGrowthStep());
-                    if (currTreesInForest[x][y].getFertility() < 1)
-                        currTreesInForest[x][y].setFertility(1);
+            if (random.nextInt(tree.getFertility()) == 0) {
+                int x, y;
+                if (k % 2 == 0) {
+                    x = random.nextInt(i + 1, i + 3);
+                    y = random.nextInt(j + 1, j + 3);
+                } else if (k % 3 == 0) {
+                    x = random.nextInt(i + 1, i + 3);
+                    y = random.nextInt(j - 3, j - 1);
+                } else if (k % 5 == 0) {
+                    x = random.nextInt(i - 3, i - 1);
+                    y = random.nextInt(j + 1, j + 3);
+                } else {
+                    x = random.nextInt(i - 3, i - 1);
+                    y = random.nextInt(j - 3, j - 1);
                 }
-                return;
+                if (checkNearTrees(x, y) && currTreesInForest[x][y] == null) {
+                    Tree newTree = new Tree(determineTree(tree));
+                    currTreesInForest[x][y] = newTree;
+                    newTree.setTile(determineStartTreeTile(newTree.getTiles(), currentSeason));
+                    setTree(newTree, x, y);
+                    // With age, the ability to produce shoots decreases
+                    if (currTreesInForest[x][y].getFertility() > 1) {
+                        currTreesInForest[x][y].setFertility(currTreesInForest[x][y].getFertility() - currTreesInForest[x][y].getGrowthStep());
+                        if (currTreesInForest[x][y].getFertility() < 1)
+                            currTreesInForest[x][y].setFertility(1);
+                    }
+                    return;
+                }
             }
         }
     }

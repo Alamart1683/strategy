@@ -37,7 +37,7 @@ public class Tree extends Plant {
             Random random = new Random(getAge());
             if (getAge() > getAgeThreshold()) {
                 setTile(getTiles()[getGrowthStatus() - 1][4]);
-                if (random.nextInt(getAgeThreshold() + getAgeThreshold() / 10 - getAge()) == 0) {
+                if (random.nextInt(getAgeThreshold() + getAgeThreshold() + getAgeThreshold() / 10 - getAge()) == 0) {
                     setAlive(false);
                 }
             }
