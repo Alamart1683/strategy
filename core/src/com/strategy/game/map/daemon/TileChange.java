@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @Getter
-public class SeasonChange {
+public class TileChange {
     private Season currentSeason;
     private Map map;
     private TextureRegion[][] tiles;
@@ -24,7 +24,7 @@ public class SeasonChange {
     private TiledMapTileLayer layer;
     ArrayList<TextureRegion> prevTiles = new ArrayList<>();
 
-    public SeasonChange(Map map, int currentSeasonIter) {
+    public TileChange(Map map, int currentSeasonIter) {
         this.map = map;
         this.tiles = map.getTextureRegions();
         this.currentSeason = map.getStartSeason();
@@ -40,7 +40,7 @@ public class SeasonChange {
         layer.setCell(x, y, new TiledMapTileLayer.Cell().setTile(new StaticTiledMapTile(tile)));
     }
 
-    public int temperateSeasonChanging(int currentSeasonIter) throws InterruptedException {
+    public int temperateSeasonChanging(int currentSeasonIter) {
         if (currentSeasonIter == 9) {
             currentSeason = determineTemperateNextSeason();
             currentSeasonIter = 0;
@@ -95,7 +95,6 @@ public class SeasonChange {
                 }
             }
             currentSeasonIter++;
-            Thread.sleep(700);
         }
         this.currentSeasonIter = currentSeasonIter;
         return currentSeasonIter;
