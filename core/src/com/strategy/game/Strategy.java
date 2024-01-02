@@ -14,16 +14,19 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.strategy.game.map.Map;
 import com.strategy.game.map.daemon.ForestChange;
 import com.strategy.game.map.daemon.GrassChange;
-import com.strategy.game.map.forest.Plant;
+import com.strategy.game.map.daemon.SeasonChangeDaemonTask;
 import com.strategy.game.map.terrain.Season;
-import com.strategy.game.map.daemon.SeasonChange;
+import com.strategy.game.map.daemon.TileChange;
+
+import java.util.Timer;
 
 public class Strategy extends ApplicationAdapter {
 	Map map;
-	SeasonChange seasonChange;
+	TileChange tileChange;
 	ForestChange forestChange;
-
 	GrassChange grassChange;
+	SeasonChangeDaemonTask seasonChangeDaemonTask;
+	Timer seasonChangeDemon;
 
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -35,11 +38,6 @@ public class Strategy extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Season currentSeason;
 	private String climate;
-	private int currentSeasonIter;
-	private int grassStartBirthIter;
-
-	private int yearCount = 0;
-	private int year = 0;
 
 	
 	@Override
@@ -48,7 +46,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 3500, 3500);
+		camera.setToOrtho(false, (w / h) * 1500, 1500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -58,62 +56,45 @@ public class Strategy extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		currentSeason = Season.Summer;
-		currentSeasonIter = 4;
 		climate = "temperate";
-		grassStartBirthIter = 3;
 
 		map = new Map(
 				50,
 				50,
-				128,
-				128,
-				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
+				64,
+				64,
+				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons64.png"),
 				currentSeason
 		);
 
-		seasonChange = new SeasonChange(map, currentSeasonIter);
+		tileChange = new TileChange(map, 4);
 
-		forestChange = new ForestChange(map, climate, currentSeason);
+		forestChange = new ForestChange(map, climate, currentSeason, batch);
 
-		grassChange = new GrassChange(map, climate, currentSeason, grassStartBirthIter);
+		// grassChange = new GrassChange(map, climate, currentSeason, 3);
 
-		new Thread(() -> {
-			while (true) {
-				try {
-					currentSeasonIter = seasonChange.temperateSeasonChanging(currentSeasonIter);
-					if (seasonChange.getCurrentSeasonIter() == 9) {
-						currentSeason = seasonChange.determineTemperateNextSeason();
-						yearCount++;
-					}
-					forestChange.nextForestGrowsIter(currentSeason, currentSeasonIter);
-					grassChange.nextGrassGrowsIter(currentSeason, currentSeasonIter);
-					if (yearCount == 4) {
-						year++;
-						yearCount = 0;
-					}
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}).start();
+		seasonChangeDaemonTask = new SeasonChangeDaemonTask(tileChange, forestChange);
+
+		seasonChangeDemon = new Timer();
+		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 1000);
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "Year: " + year, 10, 40);
-		font.draw(batch, "Season: " + seasonChange.getCurrentSeason() + " iteration: " + seasonChange.getCurrentSeasonIter(), 10, 20);
+		font.draw(batch, "Year: " + seasonChangeDaemonTask.getYear(), 10, 40);
+		font.draw(batch, "Season: " + seasonChangeDaemonTask.getCurrentSeason() + " iteration: " + seasonChangeDaemonTask.getCurrentIter(), 10, 20);
 		batch.end();
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 
 	}
 

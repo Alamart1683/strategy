@@ -1,6 +1,10 @@
 package com.strategy.game.map.daemon;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -17,23 +21,24 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.TimerTask;
 
 @Getter
 public class ForestChange {
     private Map map;
-    private TiledMapTileLayer forest;
     private List<Tree> trees;
     private Tree[][] currTreesInForest;
     private Random random = new Random();
+    private SpriteBatch spriteBatch;
     int currentIter;
 
     @SneakyThrows
-    public ForestChange(Map map, String climate, Season startSeason) {
+    public ForestChange(Map map, String climate, Season startSeason, SpriteBatch spriteBatch) {
         this.map = map;
-        this.forest = (TiledMapTileLayer) map.getMap().getLayers().get(1);
         this.trees = new ArrayList<>();
         this.currentIter = 0;
         this.currTreesInForest = initializeCurrTreesInForest();
+        this.spriteBatch = spriteBatch;
         loadTrees(climate, startSeason);
         initializeForest();
     }
@@ -85,29 +90,38 @@ public class ForestChange {
     }
 
     private void setTree(Tree tree, int x, int y) {
-        if (tree == null) {
-            currTreesInForest[x][y] = null;
-            forest.setCell(x, y, new TiledMapTileLayer.Cell().setTile(new StaticTiledMapTile(map.getTransparent())));
-        } else {
-            forest.setCell(x, y, new TiledMapTileLayer.Cell().setTile(new StaticTiledMapTile(tree.getTile())));
-            currTreesInForest[x][y] = tree;
-        }
+        Gdx.app.postRunnable(() -> {
+            spriteBatch.begin();
+            if (tree == null) {
+                currTreesInForest[x][y] = null;
+                Sprite treeSprite = new Sprite(map.getTransparent());
+                treeSprite.setPosition(x, y);
+                treeSprite.draw(spriteBatch);;
+            } else {
+                Sprite treeSprite = new Sprite(tree.getTile());
+                treeSprite.setPosition(x, y);
+                currTreesInForest[x][y] = tree;
+                treeSprite.draw(spriteBatch);
+            }
+            spriteBatch.end();
+        });
+
     }
 
     public void initializeForest() {
         for (int i = 0; i < trees.size() * trees.size(); i++) {
             for (int j = 0; j < trees.size(); j++) {
-                int x = random.nextInt(forest.getWidth());
-                int y = random.nextInt(forest.getHeight());
+                int x = random.nextInt(map.getWidth());
+                int y = random.nextInt(map.getHeight());
                 // More uniform tree growth
-                if (x < forest.getWidth() / 5)
-                    x = forest.getWidth() / 5;
-                if (x > forest.getWidth() - 5)
-                    x = forest.getWidth() - 5;
-                if (y < forest.getHeight() / 5)
-                    y = forest.getHeight() / 5;
-                if (y > forest.getHeight() - 5)
-                    y = forest.getHeight() - 5;
+                if (x < map.getWidth() / 5)
+                    x = map.getWidth() / 5;
+                if (x > map.getWidth() - 5)
+                    x = map.getWidth() - 5;
+                if (y < map.getHeight() / 5)
+                    y = map.getHeight() / 5;
+                if (y > map.getHeight() - 5)
+                    y = map.getHeight() - 5;
                 Tree tree = new Tree(trees.get(j));
                 setTree(tree, x, y);
 
@@ -116,8 +130,8 @@ public class ForestChange {
     }
 
     public void nextForestGrowsIter(Season currentSeason, int currentSeasonIter) {
-        for (int i = 0; i < forest.getWidth(); i++) {
-            for (int j = 0; j < forest.getHeight(); j++) {
+        for (int i = 0; i < map.getWidth(); i++) {
+            for (int j = 0; j < map.getHeight(); j++) {
                 if (currTreesInForest[i][j] != null) {
                     if (!currTreesInForest[i][j].isAlive()) {
                         setTree(null, i, j);
@@ -182,57 +196,57 @@ public class ForestChange {
     }
 
     private boolean checkNearTrees(int x, int y) {
-        if (x < forest.getWidth() && x >= 0 && y < forest.getHeight() && y >= 0) {
+        if (x < map.getWidth() && x >= 0 && y < map.getHeight() && y >= 0) {
             int nearWithoutBordersCase = random.nextInt(40);
             if (nearWithoutBordersCase == 0)
                 return true;
 
             boolean xMinus1y = false;
-            if (x - 1 >= forest.getWidth() || x - 1 < 0)
+            if (x - 1 >= map.getWidth() || x - 1 < 0)
                 xMinus1y = true;
-            else if (forest.getCell(x - 1, y).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x - 1][y].getTile().equals(map.getTransparent()))
                 xMinus1y = true;
 
             boolean xPlus1y = false;
-            if (x + 1 >= forest.getWidth())
+            if (x + 1 >= map.getWidth())
                 xPlus1y = true;
-            else if (forest.getCell(x + 1, y).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x + 1][y].getTile().equals(map.getTransparent()))
                 xPlus1y = true;
 
             boolean xyPlus1 = false;
-            if (y + 1 >= forest.getHeight())
+            if (y + 1 >= map.getHeight())
                 xyPlus1 = true;
-            else if (forest.getCell(x, y + 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x][y + 1].getTile().equals(map.getTransparent()))
                 xyPlus1 = true;
 
             boolean xyMinus1 = false;
-            if (y - 1 >= forest.getHeight()|| y - 1 < 0)
+            if (y - 1 >= map.getHeight()|| y - 1 < 0)
                 xyMinus1 = true;
-            else if (forest.getCell(x, y - 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x][y - 1].getTile().equals(map.getTransparent()))
                 xyMinus1 = true;
 
             boolean xPlus1yPlus1 = false;
-            if (x + 1 >= forest.getWidth() || y + 1 >= forest.getHeight())
+            if (x + 1 >= map.getWidth() || y + 1 >= map.getHeight())
                 xPlus1yPlus1 = true;
-            else if (forest.getCell(x + 1, y + 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x + 1][y + 1].getTile().equals(map.getTransparent()))
                 xPlus1yPlus1 = true;
 
             boolean xMinus1yPlus1 = false;
-            if (x - 1 >= forest.getWidth() || x - 1 < 0 || y + 1 >= forest.getHeight())
+            if (x - 1 >= map.getWidth() || x - 1 < 0 || y + 1 >= map.getHeight())
                 xMinus1yPlus1 = true;
-            else if (forest.getCell(x - 1,y + 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x - 1][y + 1].getTile().equals(map.getTransparent()))
                 xMinus1yPlus1 = true;
 
             boolean xPlus1yMinus1 = false;
-            if (x + 1 >= forest.getWidth() || y - 1 >= forest.getHeight() || y - 1 < 0)
+            if (x + 1 >= map.getWidth() || y - 1 >= map.getHeight() || y - 1 < 0)
                 xPlus1yMinus1 = true;
-            else if (forest.getCell(x + 1,y - 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x + 1][y - 1].getTile().equals(map.getTransparent()))
                 xPlus1yMinus1 = true;
 
             boolean xMinus1yMinus1 = false;
-            if (x - 1 >= forest.getWidth() || x - 1 < 0 || y - 1 >= forest.getHeight() || y - 1 < 0)
+            if (x - 1 >= map.getWidth() || x - 1 < 0 || y - 1 >= map.getHeight() || y - 1 < 0)
                 xMinus1yMinus1 = true;
-            else if (forest.getCell(x - 1,y - 1).getTile().getTextureRegion().equals(map.getTransparent()))
+            else if (currTreesInForest[x - 1][y - 1].getTile().equals(map.getTransparent()))
                 xMinus1yMinus1 = true;
             int nearCase = random.nextInt(2);
             if (nearCase == 0) {
