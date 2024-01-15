@@ -36,6 +36,7 @@ public class Strategy extends ApplicationAdapter {
 	private Texture texture;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private SpriteBatch gui;
 	private Season currentSeason;
 	private String climate;
 
@@ -46,7 +47,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 4000, 4000);
+		camera.setToOrtho(false, (w / h) * 1500, 1500);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -54,13 +55,15 @@ public class Strategy extends ApplicationAdapter {
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		gui = new SpriteBatch();
+
 
 		currentSeason = Season.Summer;
 		climate = "temperate";
 
 		map = new Map(
-				30,
-				30,
+				15,
+				15,
 				128,
 				128,
 				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
@@ -77,7 +80,7 @@ public class Strategy extends ApplicationAdapter {
 
 		seasonChangeDemon = new Timer();
 
-		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 1000);
+		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 100);
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
@@ -88,11 +91,14 @@ public class Strategy extends ApplicationAdapter {
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
+		gui.begin();
+		font.draw(gui, "Year: " + seasonChangeDaemonTask.getYear(), 10, 40);
+		font.draw(gui, "Season: " + seasonChangeDaemonTask.getCurrentSeason() + " iteration: " + seasonChangeDaemonTask.getCurrentIter(), 10, 20);
+		gui.end();
+		batch.setProjectionMatrix(camera.combined);
+		camera.update();
 		forestChange.renderForest();
-		batch.begin();
-		font.draw(batch, "Year: " + seasonChangeDaemonTask.getYear(), 10, 40);
-		font.draw(batch, "Season: " + seasonChangeDaemonTask.getCurrentSeason() + " iteration: " + seasonChangeDaemonTask.getCurrentIter(), 10, 20);
-		batch.end();
+
 	}
 
 	@Override

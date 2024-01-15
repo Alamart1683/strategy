@@ -20,7 +20,6 @@ public class Map {
     private Season startSeason;
     private TiledMap map;
     private TextureRegion transparent;
-
     public Map(int width, int height, int tileWidth, int tileHeight, Texture tiles, Season startSeason) {
         this.width = width;
         this.height = height;

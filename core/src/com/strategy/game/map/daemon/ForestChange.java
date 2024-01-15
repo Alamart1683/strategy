@@ -180,14 +180,48 @@ public class ForestChange {
             if (nearWithoutBordersCase == 0)
                 return true;
 
-            boolean xMinus1y = (x - 1 >= map.getWidth() || x - 1 < 0) && currTreesInForest[x - 1][y] == null;
-            boolean xPlus1y = x + 1 >= map.getWidth() && currTreesInForest[x + 1][y] == null;
-            boolean xyPlus1 = y + 1 >= map.getHeight() && currTreesInForest[x][y + 1] == null;
-            boolean xyMinus1 = (y - 1 >= map.getHeight() || y - 1 < 0) && currTreesInForest[x][y - 1] == null;
-            boolean xPlus1yPlus1 = (x + 1 >= map.getWidth() || y + 1 >= map.getHeight()) && currTreesInForest[x + 1][y + 1] == null;
-            boolean xMinus1yPlus1 = (x - 1 >= map.getWidth() || x - 1 < 0 || y + 1 >= map.getHeight()) && currTreesInForest[x - 1][y + 1] == null;
-            boolean xPlus1yMinus1 = (x + 1 >= map.getWidth() || y - 1 >= map.getHeight() || y - 1 < 0) && currTreesInForest[x + 1][y - 1] == null;
-            boolean xMinus1yMinus1 = (x - 1 >= map.getWidth() || x - 1 < 0 || y - 1 >= map.getHeight() || y - 1 < 0) && currTreesInForest[x - 1][y - 1] == null;
+            boolean xMinus1y = false, xyPlus1 = false, xPlus1y = false, xyMinus1 = false, xPlus1yPlus1 = false, xMinus1yPlus1 = false, xPlus1yMinus1 = false, xMinus1yMinus1 = false;
+
+            if (x - 1 < 0)
+                xMinus1y = true;
+            else if (currTreesInForest[x - 1][y] == null)
+                xMinus1y = true;
+
+            if (x + 1 >= map.getWidth())
+                xPlus1y = true;
+            else if (currTreesInForest[x + 1][y] == null)
+                xPlus1y = true;
+
+            if (y + 1 >= map.getHeight())
+                xyPlus1 = true;
+            else if (currTreesInForest[x][y + 1] == null)
+                xyPlus1 = true;
+
+            if (y - 1 < 0)
+                xyMinus1 = true;
+            else if (currTreesInForest[x][y - 1] == null)
+                xyMinus1 = true;
+
+            if (x + 1 >= map.getWidth() || y + 1 >= map.getHeight())
+                xPlus1yPlus1 = true;
+            else if (currTreesInForest[x + 1][y + 1] == null)
+                xPlus1yPlus1 = true;
+
+            if (x - 1 < 0 || y + 1 >= map.getHeight())
+                xMinus1yPlus1 = true;
+            else if (currTreesInForest[x - 1][y + 1] == null)
+                xMinus1yPlus1 = true;
+
+            if (x + 1 >= map.getWidth() || y - 1 < 0)
+                xPlus1yMinus1 = true;
+            else if (currTreesInForest[x + 1][y - 1] == null)
+                xPlus1yMinus1 = true;
+
+            if (x - 1 < 0 || y - 1 < 0)
+                xMinus1yMinus1 = true;
+            else if (currTreesInForest[x - 1][y - 1] == null)
+                xMinus1yMinus1 = true;
+
             int nearCase = random.nextInt(2);
 
             if (nearCase == 0) {
@@ -206,12 +240,17 @@ public class ForestChange {
                 spriteBatch.begin();
                 if (currTreesInForest[i][j] != null) {
                     Sprite sprite = new Sprite(currTreesInForest[i][j].getTile());
-                    sprite.setPosition((float) (i * Math.sqrt(map.getTileWidth())), (float) (j * Math.sqrt(map.getTileHeight())));
+                    sprite.setPosition(i * map.getTileWidth(), j * map.getTileHeight() + (float) map.getTileHeight() / 2);
+                    sprite.setScale(1);
                     sprite.draw(spriteBatch);
-                    //spriteBatch.draw(currTreesInForest[i][j].getTile(), (float) (i * Math.sqrt(map.getTileWidth())), (float) (j * Math.sqrt(map.getTileHeight())));
                 }
                 spriteBatch.end();
             }
         }
+    }
+
+    public class TreesOnTile {
+        private int x;
+        private int y;
     }
 }
