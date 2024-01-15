@@ -235,13 +235,13 @@ public class ForestChange {
 
     // rendering trees
     public void renderForest() {
-        for (int i = 0; i < currTreesInForest.length; i++) {
-            for (int j = 0; j < currTreesInForest[0].length; j++) {
+        for (int i = currTreesInForest.length - 1; i >= 0; i--) {
+            for (int j = currTreesInForest[0].length - 1; j >= 0; j--) {
                 spriteBatch.begin();
                 if (currTreesInForest[i][j] != null) {
                     Sprite sprite = new Sprite(currTreesInForest[i][j].getTile());
-                    sprite.setPosition(i * map.getTileWidth(), j * map.getTileHeight() + (float) map.getTileHeight() / 2);
-                    sprite.setScale(1);
+                    sprite.setPosition(i * map.getTileWidth() - map.getTileWidth() / 2, j * map.getTileHeight() + map.getTileHeight() / 2);
+                    //sprite.setScale(1);
                     sprite.draw(spriteBatch);
                 }
                 spriteBatch.end();

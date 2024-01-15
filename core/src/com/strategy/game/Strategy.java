@@ -47,7 +47,7 @@ public class Strategy extends ApplicationAdapter {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 1500, 1500);
+		camera.setToOrtho(false, (w / h) * 900, 900);
 		camera.update();
 
 		cameraController = new CameraInputController(camera);
@@ -64,9 +64,9 @@ public class Strategy extends ApplicationAdapter {
 		map = new Map(
 				15,
 				15,
-				128,
-				128,
-				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons128.png"),
+				64,
+				64,
+				new Texture("assets/tiles/climate/temperate/plain_temperate_seasons64.png"),
 				currentSeason
 		);
 
@@ -80,7 +80,7 @@ public class Strategy extends ApplicationAdapter {
 
 		seasonChangeDemon = new Timer();
 
-		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 100);
+		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 300);
 
 		renderer = new OrthogonalTiledMapRenderer(map.getMap());
 	}
@@ -98,7 +98,6 @@ public class Strategy extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		forestChange.renderForest();
-
 	}
 
 	@Override
