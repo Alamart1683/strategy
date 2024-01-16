@@ -91,13 +91,13 @@ public class Strategy extends ApplicationAdapter {
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
+		batch.setProjectionMatrix(camera.combined);
+		camera.update();
+		seasonChangeDaemonTask.renderPlants();
 		gui.begin();
 		font.draw(gui, "Year: " + seasonChangeDaemonTask.getYear(), 10, 40);
 		font.draw(gui, "Season: " + seasonChangeDaemonTask.getCurrentSeason() + " iteration: " + seasonChangeDaemonTask.getCurrentIter(), 10, 20);
 		gui.end();
-		batch.setProjectionMatrix(camera.combined);
-		camera.update();
-		forestChange.renderForest();
 	}
 
 	@Override

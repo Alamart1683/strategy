@@ -1,5 +1,6 @@
 package com.strategy.game.map.daemon;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.strategy.game.map.terrain.Season;
 import lombok.Getter;
 
@@ -38,5 +39,25 @@ public class SeasonChangeDaemonTask extends TimerTask {
             year++;
             yearCount = 0;
         }
+    }
+
+    // rendering plants
+    public void renderPlants() {
+        forestChange.getSpriteBatch().begin();
+        for (int i = 0; i  < forestChange.getCurrTreesInForest().length; i++) {
+            for (int j = forestChange.getCurrTreesInForest()[0].length - 1; j > 0; j--) {
+                if (forestChange.getCurrTreesInForest()[i][j] != null) {
+                    Sprite sprite = new Sprite(forestChange.getCurrTreesInForest()[i][j].getTile());
+                    if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 1) {
+                        sprite.setPosition(i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2, j * forestChange.getMap().getTileHeight());
+                    }
+                    else if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 2) {
+                        sprite.setPosition(i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2, j * forestChange.getMap().getTileHeight() + forestChange.getMap().getTileHeight() / 2);
+                    }
+                    sprite.draw(forestChange.getSpriteBatch());
+                }
+            }
+        }
+        forestChange.getSpriteBatch().end();
     }
 }

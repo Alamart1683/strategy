@@ -17,6 +17,8 @@ public abstract class Plant {
     private TextureRegion tile;
     private int lastGrowthStatus;
     private TextureRegion[][] tiles;
+    private int depth;
+    private int front;
 
     public void setAge(int age) {
         this.age = age;
@@ -50,6 +52,14 @@ public abstract class Plant {
         this.growthStatus = growthStatus;
     }
 
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public void setFront(int front) {
+        this.front = front;
+    }
+
     public Plant(String plantName, PlantType plantType, int growthStep, int growthStatus, int growthThreshold, int age, int ageThreshold, int fertility, TextureRegion sprite, TextureRegion[][] tiles) {
         this.plantName = plantName;
         this.plantType = plantType;
@@ -63,6 +73,8 @@ public abstract class Plant {
         this.isAlive = true;
         this.tile = sprite;
         this.tiles = tiles;
+        this.depth = 1;
+        this.front = 1;
     }
 
     public abstract int grow(String currentSeason, int currentSeasonIter);

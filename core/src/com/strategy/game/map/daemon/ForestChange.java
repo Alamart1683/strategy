@@ -103,6 +103,14 @@ public class ForestChange {
                 int x = random.nextInt(map.getWidth());
                 int y = random.nextInt(map.getHeight());
                 Tree tree = new Tree(trees.get(j));
+                if (x % 2 != 0)
+                    tree.setDepth(1);
+                else
+                    tree.setDepth(2);
+                if (y % 2 != 0)
+                    tree.setFront(1);
+                else
+                    tree.setFront(2);
                 setTree(tree, x, y);
             }
         }
@@ -152,6 +160,11 @@ public class ForestChange {
                     Tree newTree = new Tree(determineTree(tree));
                     currTreesInForest[x][y] = newTree;
                     newTree.setTile(determineStartTreeTile(newTree.getTiles(), currentSeason));
+                    newTree.setDepth(determineTreeDepth(x, y));
+                    if (y % 2 != 0)
+                        tree.setFront(1);
+                    else
+                        tree.setFront(2);
                     setTree(newTree, x, y);
                     // With age, the ability to produce shoots decreases
                     if (currTreesInForest[x][y].getFertility() > 1) {
@@ -233,24 +246,31 @@ public class ForestChange {
         return false;
     }
 
-    // rendering trees
-    public void renderForest() {
-        for (int i = currTreesInForest.length - 1; i >= 0; i--) {
-            for (int j = currTreesInForest[0].length - 1; j >= 0; j--) {
-                spriteBatch.begin();
-                if (currTreesInForest[i][j] != null) {
-                    Sprite sprite = new Sprite(currTreesInForest[i][j].getTile());
-                    sprite.setPosition(i * map.getTileWidth() - map.getTileWidth() / 2, j * map.getTileHeight() + map.getTileHeight() / 2);
-                    //sprite.setScale(1);
-                    sprite.draw(spriteBatch);
-                }
-                spriteBatch.end();
+    private int determineTreeDepth(int x, int y) {
+        if (x == 0 && currTreesInForest[x + 1][y] != null)
+            if (currTreesInForest[x + 1][y].getDepth() == 1)
+                return 2;
+            else if (currTreesInForest[x + 1][y].getDepth() == 2)
+                return 1;
+
+        if (x == currTreesInForest.length - 1 && currTreesInForest[x - 1][y] != null)
+            if (currTreesInForest[x - 1][y].getDepth() == 1)
+                return 2;
+            else if (currTreesInForest[x - 1][y].getDepth() == 2)
+                return 1;
+        if (x > 0 && x < currTreesInForest.length - 1) {
+            if (currTreesInForest[x - 1][y] != null) {
+                if (currTreesInForest[x - 1][y].getDepth() == 1)
+                    return 2;
+                else if (currTreesInForest[x - 1][y].getDepth() == 2)
+                    return 1;
+            } else if (currTreesInForest[x + 1][y] != null) {
+                if (currTreesInForest[x + 1][y].getDepth() == 1)
+                    return 2;
+                else if (currTreesInForest[x + 1][y].getDepth() == 2)
+                    return 1;
             }
         }
-    }
-
-    public class TreesOnTile {
-        private int x;
-        private int y;
+        return 1;
     }
 }
