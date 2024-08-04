@@ -4,13 +4,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.strategy.game.map.terrain.Season;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.TimerTask;
 
 @Getter
 public class SeasonChangeDaemonTask extends TimerTask {
     private TileChange tileChange;
     private ForestChange forestChange;
-    // private GrassChange grassChange;
 
     private Season currentSeason;
     private int currentIter;
@@ -34,7 +36,6 @@ public class SeasonChangeDaemonTask extends TimerTask {
             yearCount++;
         }
         forestChange.nextForestGrowsIter(currentSeason, currentIter);
-        //grassChange.nextGrassGrowsIter(currentSeason, currentSeasonIter);
         if (yearCount == 4) {
             year++;
             yearCount = 0;
@@ -44,20 +45,58 @@ public class SeasonChangeDaemonTask extends TimerTask {
     // rendering plants
     public void renderPlants() {
         forestChange.getSpriteBatch().begin();
-        for (int i = 0; i  < forestChange.getCurrTreesInForest().length; i++) {
-            for (int j = forestChange.getCurrTreesInForest()[0].length - 1; j > 0; j--) {
+
+        int mapWidth = forestChange.getCurrTreesInForest().length;
+        int mapHeight = forestChange.getCurrTreesInForest()[0].length;
+
+        // Create a list to hold sprites with their positions
+        List<SpritePosition> spritePositions = new ArrayList<>();
+
+        // Collect all sprites with their positions
+        for (int i = 0; i < mapWidth; i++) {
+            for (int j = 0; j < mapHeight; j++) {
                 if (forestChange.getCurrTreesInForest()[i][j] != null) {
                     Sprite sprite = new Sprite(forestChange.getCurrTreesInForest()[i][j].getTile());
-                    if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 1) {
-                        sprite.setPosition(i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2, j * forestChange.getMap().getTileHeight());
+                    float x = i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2;
+                    float y = j * forestChange.getMap().getTileHeight();
+                    if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 2) {
+                        y += forestChange.getMap().getTileHeight() / 2;
                     }
-                    else if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 2) {
-                        sprite.setPosition(i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2, j * forestChange.getMap().getTileHeight() + forestChange.getMap().getTileHeight() / 2);
-                    }
-                    sprite.draw(forestChange.getSpriteBatch());
+                    spritePositions.add(new SpritePosition(sprite, x, y, forestChange.getCurrTreesInForest()[i][j].getDepth()));
                 }
             }
         }
+
+        // Sort the sprites by y-coordinate and depth
+        spritePositions.sort((sp1, sp2) -> {
+            // First sort by y-coordinate (ascending)
+            if (sp1.y != sp2.y) {
+                return Float.compare(sp2.y, sp1.y); // Inverted to sort higher y first
+            } else {
+                // Then sort by depth (ascending)
+                return Integer.compare(sp1.depth, sp2.depth);
+            }
+        });
+
+        // Draw the sorted sprites
+        for (SpritePosition sp : spritePositions) {
+            sp.sprite.setPosition(sp.x, sp.y);
+            sp.sprite.draw(forestChange.getSpriteBatch());
+        }
+
         forestChange.getSpriteBatch().end();
+    }
+
+    private static class SpritePosition {
+        Sprite sprite;
+        float x, y;
+        int depth;
+
+        SpritePosition(Sprite sprite, float x, float y, int depth) {
+            this.sprite = sprite;
+            this.x = x;
+            this.y = y;
+            this.depth = depth;
+        }
     }
 }
