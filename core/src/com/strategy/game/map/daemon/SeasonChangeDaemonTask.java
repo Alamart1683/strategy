@@ -1,6 +1,8 @@
 package com.strategy.game.map.daemon;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.strategy.game.map.forest.Tree;
 import com.strategy.game.map.terrain.Season;
 import lombok.Getter;
 
@@ -11,8 +13,8 @@ import java.util.TimerTask;
 
 @Getter
 public class SeasonChangeDaemonTask extends TimerTask {
-    private TileChange tileChange;
-    private ForestChange forestChange;
+    private final TileChange tileChange;
+    private final ForestChange forestChange;
 
     private Season currentSeason;
     private int currentIter;
@@ -42,32 +44,39 @@ public class SeasonChangeDaemonTask extends TimerTask {
         }
     }
 
-    // rendering plants
+    // Rendering plants in isometric view
     public void renderPlants() {
-        forestChange.getSpriteBatch().begin();
+        SpriteBatch spriteBatch = forestChange.getSpriteBatch();
+        spriteBatch.begin();
 
-        int mapWidth = forestChange.getCurrTreesInForest().length;
-        int mapHeight = forestChange.getCurrTreesInForest()[0].length;
+        Tree[][] currTreesInForest = forestChange.getCurrTreesInForest();
+        int mapWidth = currTreesInForest.length;
+        int mapHeight = currTreesInForest[0].length;
+        float tileWidth = forestChange.getMap().getTileWidth();
+        float tileHeight = forestChange.getMap().getTileHeight();
 
-        // Create a list to hold sprites with their positions
         List<SpritePosition> spritePositions = new ArrayList<>();
 
-        // Collect all sprites with their positions
+        // Collect sprites with their positions
         for (int i = 0; i < mapWidth; i++) {
             for (int j = 0; j < mapHeight; j++) {
-                if (forestChange.getCurrTreesInForest()[i][j] != null) {
-                    Sprite sprite = new Sprite(forestChange.getCurrTreesInForest()[i][j].getTile());
-                    float x = i * forestChange.getMap().getTileWidth() - forestChange.getMap().getTileWidth() / 2;
-                    float y = j * forestChange.getMap().getTileHeight();
-                    if (forestChange.getCurrTreesInForest()[i][j].getDepth() == 2) {
-                        y += forestChange.getMap().getTileHeight() / 2;
-                    }
-                    spritePositions.add(new SpritePosition(sprite, x, y, forestChange.getCurrTreesInForest()[i][j].getDepth()));
+                Tree tree = currTreesInForest[i][j];
+                if (tree != null) {
+                    Sprite sprite = new Sprite(tree.getTile());
+
+                    // Convert from 2D grid coordinates to isometric coordinates
+                    float x = (i - j) * tileWidth / 2;
+                    float y = (i + j) * tileHeight / 2;
+
+                    // Adjust y position for depth
+                    y -= tree.getDepth() * tileHeight / 2;
+
+                    spritePositions.add(new SpritePosition(sprite, x, y, tree.getDepth()));
                 }
             }
         }
 
-        // Sort the sprites by y-coordinate and depth
+        // Sort sprites by y-coordinate and depth for correct rendering order
         spritePositions.sort((sp1, sp2) -> {
             // First sort by y-coordinate (ascending)
             if (sp1.y != sp2.y) {
@@ -78,13 +87,13 @@ public class SeasonChangeDaemonTask extends TimerTask {
             }
         });
 
-        // Draw the sorted sprites
+        // Draw sprites
         for (SpritePosition sp : spritePositions) {
             sp.sprite.setPosition(sp.x, sp.y);
-            sp.sprite.draw(forestChange.getSpriteBatch());
+            sp.sprite.draw(spriteBatch);
         }
 
-        forestChange.getSpriteBatch().end();
+        spriteBatch.end();
     }
 
     private static class SpritePosition {

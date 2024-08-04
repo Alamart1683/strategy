@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.strategy.game.map.Map;
@@ -45,7 +46,7 @@ public class Strategy extends ApplicationAdapter {
 	SeasonChangeDaemonTask seasonChangeDaemonTask;
 	Timer seasonChangeDemon;
 
-	private TiledMapRenderer renderer;
+	private IsometricTiledMapRenderer renderer; // Изометрический рендерер
 	private OrthographicCamera camera;
 	private AssetManager assetManager;
 	private Texture tiles;
@@ -56,9 +57,9 @@ public class Strategy extends ApplicationAdapter {
 	private Season currentSeason;
 	private String climate;
 
-	// Variables to track key states
+	// Переменные для отслеживания состояния клавиш
 	private boolean upPressed, downPressed, leftPressed, rightPressed;
-	private float cameraSpeed = 200; // Adjust this value to control the camera speed
+	private float cameraSpeed = 200; // Настройка скорости камеры
 
 	@Override
 	public void create() {
@@ -94,7 +95,7 @@ public class Strategy extends ApplicationAdapter {
 		seasonChangeDemon = new Timer();
 		seasonChangeDemon.schedule(seasonChangeDaemonTask, 0, 300);
 
-		renderer = new OrthogonalTiledMapRenderer(map.getMap());
+		renderer = new IsometricTiledMapRenderer(map.getMap(), 1f); // Изометрический рендерер и масштаб
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
@@ -161,17 +162,20 @@ public class Strategy extends ApplicationAdapter {
 	}
 
 	private void updateCamera(float deltaTime) {
+		// Адаптированный метод обновления камеры для изометрической геометрии
+		float cameraMoveSpeed = cameraSpeed * deltaTime;
+
 		if (upPressed) {
-			camera.translate(0, cameraSpeed * deltaTime);
+			camera.translate(-cameraMoveSpeed, cameraMoveSpeed);
 		}
 		if (downPressed) {
-			camera.translate(0, -cameraSpeed * deltaTime);
+			camera.translate(cameraMoveSpeed, -cameraMoveSpeed);
 		}
 		if (leftPressed) {
-			camera.translate(-cameraSpeed * deltaTime, 0);
+			camera.translate(-cameraMoveSpeed, -cameraMoveSpeed);
 		}
 		if (rightPressed) {
-			camera.translate(cameraSpeed * deltaTime, 0);
+			camera.translate(cameraMoveSpeed, cameraMoveSpeed);
 		}
 	}
 
